@@ -1,0 +1,542 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>rtmpForHtml</title>
+	<script type="text/javascript" src="swfobject.js"></script>
+	<script type="text/javascript" src="vvMedia.js"></script>
+</head>
+
+<body>
+<div>
+	<table style="float:left; width: 960px;">
+			<td>
+				<tr>
+					<td style="height: 260px; width: 320px">
+						<form action="" method="post">
+							<textarea rows="1" cols="20" name="mediaInfo" style="width: 320px; height: 260px; font-family: 宋体; font-size: 12px;" id="mediaInfo" readonly="readonly"></textarea>
+						</form>
+					</td>
+
+					<td style="width: 517px">
+						<form action="" method="post">
+
+							<input name="bufferTime" style="width: 60px" type="text" id="bufferTime" value="2" />
+							<input type="button" onclick="setPlayMode()" value="设置缓冲区时间" /><br />
+							<label id="Label21">音量2：</label><input name="volume" style="width: 31px" type="text" id="volume" onchange="setVolume()" value="80" />
+							<input name="isMute" type="checkbox" id="isMute" onchange="setMute()" /><label id="Label132">静音</label>
+						</form>
+					</td>
+					
+					<td style="height: 260px; width: 320px;">
+						<form action="" method="post" style="width: 320px; height: 260px; font-family: 宋体; font-size: 12px;">
+							<label id="Label2">客户端版本：</label><input name="clientVersion" id="clientVersion" style="width: 150px" type="text" /><br />
+							<label id="Label4">flash 版本：</label><input name="flashVersion" id="flashVersion" style="width: 150px" type="text" /><br />
+							<label id="Label5">最低支持插件版本：</label><input name="lowestSupportHQVersion" id="lowestSupportHQVersion" style="width: 150px" type="text" /><br />
+							<label id="Label6">实际使用插件版本：</label><input name="HQVersion" id="HQVersion" style="width: 150px" type="text" /><br />
+							<label id="Label16">session:</label><input name="session" style="width: 75px" type="text" id="session" value="TestSession" />
+							<label id="Label17">ID:</label><input name="userID" style="width: 48px" type="text" id="userID" value="Test" />
+							<input name="isHD" type="checkbox" id="isHD" />						
+							<label id="Label7">高清</label>			
+							<input style="display:none;" name="isUDP" type="checkbox" id="isUDP" /><label style="display:none;" id="Label8">UDP</label>
+							<input name="rtmpAddr" style="width: 135px" type="text" id="rtmpAddr" value="rtmp.aodianyun.com:1936" />
+							<input name="rtmpLive" style="width: 46px" type="text" id="rtmpLive" value="app" />
+							<input name="rtmpStream" style="width: 46px" type="text" id="rtmpStream" value="stream" />
+							<label >密码:<input name="key" type="text" id="key" value="key" /></label><br />
+							<input name="initBtn" style="width: 48px" type="button" value="初始化" id="initBtn" onclick="initConnect()" />
+							<input name="closeBtn" style="width: 48px" type="button" value="断开" id="closeBtn" onclick="closeConnect()" />
+							<input name="publishBtn" style="width: 48px" type="button" value="上麦" id="publishBtn" onclick="startPublish()" />
+							<input name="playBtn" style="width: 48px" type="button" value="播放" id="playBtn" onclick="startPlay()" />
+							<input name="pauseBtn" style="width: 48px" type="button" value="暂停" id="pauseBtn" onclick="pause()" />
+							<input name="stopBtn" style="width: 48px" type="button" value="停止" id="stopBtn" onclick="stop()" />
+						</form>
+					</td>
+			
+				</tr>
+				<tr>
+
+					<td style="height: 240px; width: 320px" >
+						<form action="" method="post">
+							<textarea rows="1" cols="20" name="streamInfo" style="width: 320px; height: 240px; font-family: 宋体; font-size: 12px;" id="streamInfo" readonly="readonly" ></textarea>
+						</form>
+					</td>
+
+					<td style="height: 240px">
+						<form action="" method="post" style="width: 320px; height: 260px; font-family: 宋体; font-size: 12px;">
+							<label id="Label15">视频帧率：</label><input name="videoFPS" type="text"  style="width: 90px" value="10" id="videoFPS" onchange="setCameraMode()" /><br />
+							<label id="Label120">视频码率：</label><input name="videoKBitrate" style="width: 90px" type="text" value="512" id="videoKBitrate" onchange="setCameraQuality()" />
+						  (kbps)<br />
+							<label id="Label121">视频宽：</label><input name="width" style="width: 56px" type="text" value="640" id="width" onchange="setCameraMode()" />
+							
+							<label id="Label122"><br />视频高：</label><input name="height" style="width: 56px" type="text" value="480" id="height" onchange="setCameraMode()" /><br />
+							<label id="Label123">视频质量(0-100)：</label><input name="videoQuality" style="width: 39px" type="text" value="80" id="videoQuality" onchange="setCameraQuality()" /><br />
+							<label id="Label124">关键帧间隔(1-48)：</label><input name="videoKeyFrameInterval" style="width: 38px" type="text" value="30" id="videoKeyFrameInterval" onchange="setKeyFrameInterval()" /><br />
+							<label id="Label125">音频码率(kbps)：</label><input name="audioKBitrate" style="width: 91px" type="text" value="44" id="audioKBitrate" onchange="setAudioBitrate()" /><br />
+							<label id="Label126">音频采样率(Hz)：</label><input name="audioSamplerate" style="width: 92px" type="text" value="16000" id="audioSamplerate" onchange="setAudioSamplerate()" /><br />
+							<label id="Label127">音频通道数：</label><input name="audioChannelCount" style="width: 115px" type="text" value="2" id="audioChannelCount" onchange="setAudioChannelCount()" /><br />
+							<label id="Label128">采样精度(bit)：</label><input name="audioBitPerSample" style="width: 95px" type="text" value="16" id="audioBitPerSample" onchange="setAudioBitPerSample()" />
+						</form>
+					</td>
+
+					<td style="height: 260px; width: 320px;">
+						<form action="" method="post" style="width: 320px; height: 260px; font-family: 宋体; font-size: 12px;">
+							<p>
+							  <label id="Label19">音频编码：</label>
+							  <select name="audioCodecList" style="width: 150px" id="audioCodecList" onchange="setAudioCodec()">
+						      </select>
+							  <br />
+							  <label id="Label9">视频编码：</label>
+							  <select name="videoCodecList" style="width: 150px" id="videoCodecList" onchange="setVideoCodec()">
+						      </select>
+							  <br />
+							  <label id="Label10">摄 像 头：</label>
+							  <select name="camList" style="width: 150px" id="camList" onchange="setCam()">
+						      </select>
+							  <br />
+							  <label id="Label11">麦 克 风：</label>
+							  <select name="micList" style="width: 150px" id="micList" onchange="setMic()">
+						      </select>
+							  <br />
+							  <input name="isUseCam" type="checkbox" checked="checked" id="isUseCam" onchange="setIsUseCam()" />
+							  <label id="Label14">使用摄像头</label>
+							  <input name="isUseMic" type="checkbox" checked="checked" id="isUseMic" onchange="setIsUseMic()" />
+							  <label id="Label44">使用麦克风</label>
+							  <br />
+							  <input name="Button" type="button" value="麦克风"  onclick="setCapAudioFromMic()" />
+							  <input name="Button2" type="button" value="混音"  onclick="setCapAudioFromStereo()" />
+			                  <br />
+							  <input name="Button12" type="button" value="插件测试"  onclick="checkPlugin()" />
+							  <a href="./HighQualityFlashService_setup.exe">下载插件</a><br />
+							</p>
+						</form>
+					</td>
+
+				</tr>
+			</td>
+	</table>
+	<table style="float:left; width: 480px;">
+		<td id="videoDisplay" style="height: 640px; width: 480px;"  >
+			<script type="text/javascript">
+				try{
+					var width = document.getElementById("width").value;
+					var height = document.getElementById("height").value;
+				}
+				catch(e){
+				}
+				var player1;
+				player1 = new Video( "player1",	//名称必须与 DIV id 一致，否则无法显示视频
+									(width||640),
+									(height||480),
+									function(type, info){
+									   switch(type)
+									   {
+										case RTMP_MEDIA_INFO:
+											switch(info)
+											{
+											case "Svr.Version.Success":
+												_serverVersion.value = player1.getServerVersion();
+												break;
+											case "NetConnection.Connect.Success":
+											case "ChangeInfo.NetConnection.Connect.Success":
+											case "new connect":
+												_currentServer.value = player1.getCurrentServer();
+												for (var i=_changeServerList.options.length-1; i>=0; i--){
+													_changeServerList.options.remove(i);
+												}
+												var serverList = player1.getChangeSvrList();
+												var serverListArray = serverList.split(',');
+												for (index in serverListArray){
+													var item = new Option(serverListArray[index], serverListArray[index]);
+													_changeServerList.options.add(item);
+												}
+												break;
+											default:
+												break;
+											}
+											break;
+										case RTMP_MEDIA_ERROR:
+											break;
+										case MEDIA_DEVICE_INFO:
+											switch(info)
+											{
+											case "AVHardwareDisable":
+												alert("flash player 全局设置了禁用硬件设置，修改方法：\nC:\WINDOWS\system32\Macromed\Flash\mms.cfg\n文件，修改为 AVHardwareDisable=0");;
+												break;
+											//需要添加其他摄像头麦克风禁用的消息
+											default:
+												break;
+											}
+											break;
+										case RTMP_MEDIA_READY:	//swf加载完成消息
+											player1.onSwfReady();
+											onSwfReady();
+											break;
+										case RTMP_MEDIA_NETSTREAM_INFO:
+											_streamInfo.value = info;
+											break;
+										default:
+											break;
+									   }
+									   if (type != RTMP_MEDIA_NETSTREAM_INFO){
+											var date = new Date();
+											_mediaInfo.value = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"."+date.getMilliseconds()+' '+info+'\n'+_mediaInfo.value;
+									   }
+									},
+									null);	
+			</script> 
+			<div id="player1">
+				<p>
+					To view this page ensure that Adobe Flash Player version 
+					11.0.0 or greater is installed. 
+				</p>
+				<script type="text/javascript">
+					//var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
+					document.write("<a href='http://www.adobe.com/go/getflashplayer'><img alt='Get Adobe Flash player' /></a>" ); 
+				</script>
+			</div>
+		</td>
+	</table>
+</div>
+
+
+
+
+
+<script type="text/javascript">
+	var _camIndexArray = [];
+	var _micIndexArray = [];
+
+	var _mediaInfo = document.getElementById("mediaInfo");
+	var _streamInfo = document.getElementById("streamInfo");
+	var _audioCodecList = document.getElementById("audioCodecList");
+	var _videoCodecList = document.getElementById("videoCodecList");
+	var _micList = document.getElementById("micList");
+	var _camList = document.getElementById("camList");
+	var _isUseCam = document.getElementById("isUseCam");
+	var _isUseMic = document.getElementById("isUseMic");
+	var _isHD = document.getElementById("isHD");
+	var _isUDP = document.getElementById("isUDP");
+	var _rtmpAddr = document.getElementById("rtmpAddr");
+	var _rtmpLive = document.getElementById("rtmpLive");
+	var _rtmpStream = document.getElementById("rtmpStream");
+	var _userID = document.getElementById("userID");
+	var _session = document.getElementById("session");
+	var _width = document.getElementById("width");
+	var _height = document.getElementById("height");
+	var _audioKBitrate = document.getElementById("audioKBitrate");
+	var _audioSamplerate = document.getElementById("audioSamplerate");
+	var _videoFPS = document.getElementById("videoFPS");
+	var _videoKeyFrameInterval = document.getElementById("videoKeyFrameInterval");
+	var _videoKBitrate = document.getElementById("videoKBitrate");
+	var _videoQuality = document.getElementById("videoQuality");
+	var _volume = document.getElementById("volume");
+	var _isMute = document.getElementById("isMute");
+	var _bufferTime = document.getElementById("bufferTime");
+	var _audioChannelCount = document.getElementById("audioChannelCount");
+	var _audioBitPerSample = document.getElementById("audioBitPerSample");
+	var _clientVersion = document.getElementById("clientVersion");
+	var _flashVersion = document.getElementById("flashVersion");
+	var _lowestSupportHQVersion = document.getElementById("lowestSupportHQVersion");
+	var _HQVersion = document.getElementById("HQVersion");
+	var _serverVersion = document.getElementById("serverVersion");
+	var _currentServer = document.getElementById("currentServer");
+	var _changeServerList = document.getElementById("changeServerList");
+	var _key = document.getElementById("key");
+	
+	function onSwfReady(){
+		if (player1)
+		{
+			// audioCodecList
+			for (var i=_audioCodecList.options.length-1; i>=0; i--){
+				_audioCodecList.options.remove(i);
+			}
+			var audioCodecSet = player1.getAudioCodecSet();
+			var audioCodecArray = audioCodecSet.split(',');
+			for (audioCodec in audioCodecArray){
+				var item = new Option(audioCodecArray[audioCodec], audioCodecArray[audioCodec]);
+				_audioCodecList.options.add(item);
+			}
+			// videoCodecList
+			for (var i=_videoCodecList.options.length-1; i>=0; i--){
+				_videoCodecList.options.remove(i);
+			}
+			var videoCodecSet = player1.getVideoCodecSet();
+			var videoCodecArray = videoCodecSet.split(',');
+			for (videoCodec in videoCodecArray){
+				var item = new Option(videoCodecArray[videoCodec], videoCodecArray[videoCodec]);
+				_videoCodecList.options.add(item);
+			}
+			// micList
+			for (var i=_micList.options.length-1; i>=0; i--){
+				_micList.options.remove(i);
+			}
+			var micListArray = player1.getMicList();
+			for (var index in micListArray){
+				var item = new Option(micListArray[index], micListArray[index]);
+				_micList.options.add(item);
+				_micIndexArray.push(index);
+			}
+			// camList
+			for (var i=_camList.options.length-1; i>=0; i--){
+				_camList.options.remove(i);
+			}
+			var camListArray = player1.getCamList();
+			for (var index in camListArray){
+				var item = new Option(camListArray[index], camListArray[index]);
+				_camList.options.add(item);
+				_camIndexArray.push(index);
+			}
+			//vvMediaVersion | clientVersion
+			_clientVersion.value = player1.getClientVersion();
+			//HQVersion
+			_lowestSupportHQVersion.value = player1.getLowestSupportHQVersion();
+			_HQVersion.value = player1.getHQVersion();
+		}
+	}
+	function initConnect(){
+		if (player1)
+			player1.initConnect( _rtmpAddr.value,
+							_rtmpLive.value,
+							_rtmpStream.value,
+							"hangzhou",
+							1500,
+							300,
+							1000,
+							_userID.value,
+							_isHD.checked,
+							_session.value,
+							_isUDP.checked,
+							_key.value);
+			_flashVersion.value = player1.getFlashVersion();
+	}
+	function closeConnect()
+	{
+		if (player1)
+			player1.closeConnect();
+	}
+	function startPublish()
+	{
+		if (player1) {
+			var micID = -1;
+			for(var i=0; i<_micIndexArray.length; i++)
+			{
+				if(i == _micList.selectedIndex)
+				{
+					micID = _micIndexArray[i]
+					break;
+				}
+			}
+			var camID = -1;
+			for(var i=0; i<_camIndexArray.length; i++)
+			{
+				if(i == _camList.selectedIndex)
+				{
+					camID = _camIndexArray[i]
+					break;
+				}
+			}
+			player1.startPublish( _width.value ,
+							 _height.value ,
+							 micID,
+							 camID,
+							 _audioCodecList.options[_audioCodecList.selectedIndex].value,
+							 _videoCodecList.options[_videoCodecList.selectedIndex].value,
+							 _audioKBitrate.value,
+							 _audioSamplerate.value,
+							 _videoFPS.value,
+							 _videoKeyFrameInterval.value,
+							 _videoKBitrate.value,
+							 _videoQuality.value,
+							 _volume.value,
+							 _isUseCam.checked,
+							 _isUseMic.checked,
+							 _isHD.checked,
+							 _isUDP.checked,
+							 _isMute.checked);
+		}
+	}
+	function startPlay()
+	{
+		if (player1)
+			player1.startPlay(_rtmpStream.value,  
+							_bufferTime.value,
+						   0,
+						   0,
+						   0,
+						   _volume.value,
+						   _isMute.checked);
+	}
+	function pause()
+	{
+		if (player1)
+			player1.pause();
+	}
+	function stop()
+	{
+		if (player1)
+			player1.stop();
+	}
+	function setAudioCodec()
+	{
+		if (player1){
+			var audioCodec = _audioCodecList.options[_audioCodecList.selectedIndex].value;
+			player1.setAudioCodec(audioCodec);
+		}
+	}
+	function setVideoCodec()
+	{
+		if (player1){
+			var videoCodec = _videoCodecList.options[_videoCodecList.selectedIndex].value;
+			player1.setVideoCodec(videoCodec);
+		}
+	}
+	function setMic()
+	{
+		if (player1){
+			var micID = -1;
+			for(var i=0; i<_micIndexArray.length; i++)
+			{
+				if(i == _micList.selectedIndex)
+				{
+					micID = _micIndexArray[i]
+					break;
+				}
+			}
+			player1.setVideoCodec(micID);
+		}
+	}
+	function setCam()
+	{
+		if (player1){
+			var camID = -1;
+			for(var i=0; i<_camIndexArray.length; i++)
+			{
+				if(i == _camList.selectedIndex)
+				{
+					camID = _camIndexArray[i]
+					break;
+				}
+			}
+			player1.setVideoCodec(camID);
+		}
+	}
+	function setIsUseCam()
+	{
+		if (player1){
+			var checked = _isUseCam.checked;
+			player1.setIsUseCam(checked);
+		}
+	}
+	function setIsUseMic()
+	{
+		if (player1){
+			var checked = _isUseMic.checked;
+			player1.setIsUseMic(checked);
+		}
+	}
+	function downloadHD(){
+		if(player1){
+			player1.downloadHD();
+		}
+	}
+	function checkPlugin(){
+		if(player1){
+			var result = player1.checkPlugin();
+			if (result){
+				switch(result.status)
+				{
+				case 1:
+					_mediaInfo.value = 'HQPlugin is ready\n'+_mediaInfo.value;
+					break;
+				default:
+					_mediaInfo.value = 'HQPlugin need help: '+result.info+'\n'+_mediaInfo.value;
+					break;
+				}
+			}
+			else{
+				document.getElementById("mediaInfo").value += 'HQPlugin check error\n';
+			}
+		}
+	}
+	function setCameraMode(){
+		if(player1){
+			player1.setCameraMode(_width.value, _height.value, _videoFPS.value);
+		}
+	}
+	function setKeyFrameInterval(){
+		if(player1){
+			player1.setKeyFrameInterval(_videoKeyFrameInterval.value);
+		}
+	}
+	function setCameraQuality(){
+		if(player1){
+			player1.setCameraQuality(_videoKBitrate.value, _videoQuality.value);
+		}
+	}
+	function setAudioBitrate(){
+		if(player1){
+			player1.setAudioBitrate(_audioKBitrate.value);
+		}
+	}
+	function setAudioSamplerate(){
+		if(player1){
+			player1.setAudioSamplerate(_audioSamplerate.value);
+		}
+	}
+	function setAudioChannelCount(){
+		if(player1){
+			player1.setAudioChannelCount(_audioChannelCount.value);
+		}
+	}
+	function setAudioBitPerSample(){
+		if(player1){
+			player1.setAudioBitPerSample(_audioBitPerSample.value);
+		}
+	}
+	function changeServer(){
+		if(player1){
+			var addr;
+			var lineType;
+			var serverString = _changeServerList.options[_changeServerList.selectedIndex].value;
+			var serverArray = serverString.split('#');
+			if (serverArray.length >= 3){
+				addr = serverArray[1];
+				lineType = serverArray[2];
+				player1.changeServer(addr, lineType);
+			}
+		}
+	}
+	function setMute(){
+		if(player1){
+			player1.setMute(_isMute.checked);
+		}
+	}
+	function setVolume(){
+		if(player1){
+			player1.setVolume(_volume.value);
+		}
+	}
+	function setPlayMode(){
+		if(player1){
+			player1.setPlayMode(_bufferTime.value, 0, 0, 0);
+		}
+	}
+	function setCapAudioFromMic(){
+		if(player1){
+			player1.setCapAudioFromMic();
+		}
+	}
+	function setCapAudioFromStereo(){
+		if(player1){
+			player1.setCapAudioFromStereo();
+		}
+	}
+</script>
+<div id="HQPlugin"></div>
+<script type="text/javascript">
+function CallExternalFunc(param,name){try{eval(name+'(\''+param+'\')');}catch(e){}}
+</script>
+<script type="text/javascript" src="HighQualityServicePlugin.js"></script> 
+</body>
+</html>
