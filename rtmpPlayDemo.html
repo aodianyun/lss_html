@@ -30,9 +30,9 @@
 
                     <label>服务器：</label><input id="rtmpAddr" style="width: 225px" type="text" value="rtmp.aodianyun.com:1936" disabled />
                     <text id="rtmpLive" visible ="false" style="width: 95px" type="text" value="app" />
-                    <input id="rtmpKey" type="hidden" visible ="false" style="width: 95px" type="text" value="123456"/>
+                    <input id="rtmpKey" style="display:none;" type="text" value="123456"/>
                     <label>Stream(选填)：</label><input id="rtmpStream" style="width: 75px; background-color:#EEE" type="text" value="999999" />
-                    <text id="userID" type="hidden" style="width: 75px; background-color:#EEE"  value="10001" />
+                    <text id="userID" style="display:none;"  value="10001" />
                 </form>
              </td>
         </tr>
@@ -152,8 +152,8 @@
             	<tr id="view_control_device">
                 	<td>
 			<form action="" method="post" style="height: 205px; " >
-				  <label>&nbsp;&nbsp;&nbsp;&nbsp;</label><input type ="hidden" style="width:55px" value="麦克风" onclick="setCapAudioFromMic()" />
-				  <input id="stereoButton"  style="width:55px" type="hidden" value="混音" onclick="setCapAudioFromStereo()" /><br /><br />		  
+				  <label>&nbsp;&nbsp;&nbsp;&nbsp;</label><input style="display:none;" value="麦克风" onclick="setCapAudioFromMic()" />
+				  <input id="stereoButton"  style="display:none;" value="混音" onclick="setCapAudioFromStereo()" /><br /><br />		  
                   <label><b>音量设置</b></label><br />   
 				  <label>&nbsp;&nbsp;&nbsp;&nbsp;音量：</label><input style="width: 30px" type="text" id="volume" onchange="setVolume()" value="80" />(0~100)
 				  <input id="isMute" type="checkbox" onchange="setMute()" /><label>静音</label>
@@ -173,21 +173,21 @@
                         <form action="" method="post" style="height: 200px;">
                         <!-- 	<label><b>视频参数</b></label><br /> -->
 <!--                             <label>&nbsp;&nbsp;&nbsp;&nbsp;宽：</label> -->
-                            <input style="width: 90px" value="320" type="hidden" id="width" onchange="setCameraMode()" />
+                            <input style="display:none;" value="320"  id="width" onchange="setCameraMode()" />
                         <!--     <label>&nbsp;&nbsp;&nbsp;&nbsp;高：</label> -->
-                            <input style="width: 90px"  value="240" type="hidden" id="height" onchange="setCameraMode()" />
+                            <input style="display:none;"  value="240"  id="height" onchange="setCameraMode()" />
                           <!--   <label>&nbsp;&nbsp;帧率：</label> -->
-                            <input t style="width: 90px" value="10" type="hidden" id="videoFPS" onchange="setCameraMode()" />
+                            <input style="display:none;" value="10"  id="videoFPS" onchange="setCameraMode()" />
                          <!--    <label>&nbsp;&nbsp;码率：</label> -->
-                            <input style="width: 90px" value="256" type="hidden" id="videoKBitrate" onchange="setCameraQuality()" />
+                            <input style="display:none;" value="256"  id="videoKBitrate" onchange="setCameraQuality()" />
                           <!--   <label><b>音频参数</b></label><br /> -->
                           <!--   <label>&nbsp;&nbsp;码率：</label> -->
-                            <input style="width: 90px"  value="44" type="hidden" id="audioKBitrate" onchange="setAudioBitrate()" />
+                            <input style="display:none;"  value="44" id="audioKBitrate" onchange="setAudioBitrate()" />
                           <!--   <label>采样率：</label> -->
-                            <input style="width: 90px" value="44100" type="hidden" id="audioSamplerate" onchange="setAudioSamplerate()" />
+                            <input style="display:none;" value="44100"  id="audioSamplerate" onchange="setAudioSamplerate()" />
                     		<!-- <label><b>版本号</b></label><br />
                             <label>客户端：</label -->
-                            	<input id="clientVersion" style="width: 170px" type="hidden"  disabled /> 
+                            	<input id="clientVersion" style="display:none;" disabled /> 
                         </form>
                     </td>
                 </tr>

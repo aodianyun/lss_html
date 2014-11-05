@@ -28,11 +28,11 @@
         	<td id="url" colspan="2">
                 <form action="" method="post" style="height: 30px">
                     <label>服务器：</label><input id="rtmpAddr" style="width: 225px" type="text" value="rtmp.aodianyun.com:1936" disabled />
-                    <input id="rtmpLive" type="hidden" style="width: 95px" type="text" value="app" />
-                    <input id="rtmpKey" type="hidden" style="width: 95px" type="text" value="123456" /> 
+                    <input id="rtmpLive" style="display:none;" type="text" value="app" />
+                    <input id="rtmpKey" style="display:none;" type="text" value="123456" /> 
                     <label>Stream(选填)：</label>
                     <input id="rtmpStream" style="width: 75px; background-color:#EEE" type="text" value="999999" />
-                  <input id="userID" type="hidden" style="width: 75px; background-color:#EEE" type="text" value="10001" />
+                  <input id="userID"  style="display:none;" type="text" value="10001" />
                 </form>
              </td>
         </tr>
@@ -188,7 +188,7 @@
                             <label>&nbsp;&nbsp;码率：</label><input style="width: 90px" type="text" value="44" id="audioKBitrate" onchange="setAudioBitrate()" />(16~48)(kbps)<br />
                             <label>采样率：</label><input style="width: 90px" type="text" value="44100" id="audioSamplerate" onchange="setAudioSamplerate()" />(16000~48000)(Hz)<br /><br />
                     		<!-- <label><b>版本号</b></label><br /> -->
-                            <!--   <label>客户端：</label> --><input id="clientVersion" type="hidden" style="width: 170px" type="text" disabled />
+                            <!--   <label>客户端：</label> --><input id="clientVersion" style="display:none;" type="text" disabled />
                         </form>
                     </td>
                 </tr>
@@ -231,8 +231,8 @@
 	var _avgPing = 200;
 	var _audioChannelCount = 2;
 	var _audioBitPerSample = 16;
-	var _clientVersion = document.getElementById("clientVersion");
-	var _flashVersion = document.getElementById("flashVersion");
+	//var _clientVersion = document.getElementById("clientVersion");
+	//var _flashVersion = document.getElementById("flashVersion");
 	var _bufferTime = 2;
 	var _videoCodec = "h264";
 	var _audioCodec = "Nellymoser";
@@ -271,7 +271,7 @@
 				_camIndexArray.push(index);
 			}
 			//vvMediaVersion | clientVersion
-			_clientVersion.value = player1.getClientVersion(); 
+			//_clientVersion.value = player1.getClientVersion(); 
 			var id=window.setInterval("setPublishByteCount()",1000); 	
 			var id1=window.setInterval("setPublishAvgBitrate()",1000); 
 			var id2=window.setInterval("setPublishMaxBitrate()",1000); 
@@ -314,7 +314,7 @@
 							_session,
 							_isUDP,
 							_rtmpKey.value);
-			_flashVersion.value = player1.getFlashVersion();
+			//_flashVersion.value = player1.getFlashVersion();
 	}
 	function closeConnect()
 	{
