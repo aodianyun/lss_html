@@ -24,7 +24,7 @@
 
 							<input name="bufferTime" style="width: 60px" type="text" id="bufferTime" value="2" />
 							<input type="button" onclick="setPlayMode()" value="设置缓冲区时间" /><br />
-							<label id="Label21">音量2：</label><input name="volume" style="width: 31px" type="text" id="volume" onchange="setVolume()" value="80" />
+							<label id="Label21">音量：</label><input name="volume" style="width: 31px" type="text" id="volume" onchange="setVolume()" value="80" />
 							<input name="isMute" type="checkbox" id="isMute" onchange="setMute()" /><label id="Label132">静音</label>
 						</form>
 					</td>
@@ -40,9 +40,9 @@
 							<input name="isHD" type="checkbox" id="isHD" />						
 							<label id="Label7">高清</label>			
 							<input style="display:none;" name="isUDP" type="checkbox" id="isUDP" /><label style="display:none;" id="Label8">UDP</label>
-							<input name="rtmpAddr" style="width: 135px" type="text" id="rtmpAddr" value="rtmp.aodianyun.com:1936" />
-							<input name="rtmpLive" style="width: 46px" type="text" id="rtmpLive" value="app" />
-							<input name="rtmpStream" style="width: 46px" type="text" id="rtmpStream" value="stream" />
+							<input name="rtmpAddr" style="width: 135px" type="text" id="rtmpAddr" value="rtmp://lssplay.aodianyun.com/demo" />
+							<input name="rtmpLive" style="width: 46px" type="text" id="rtmpLive" value="xym_test" />
+							<input name="rtmpStream" style="width: 46px" type="text" id="rtmpStream" value="game" />
 							<label >密码:<input name="key" type="text" id="key" value="key" /></label><br />
 							<input name="initBtn" style="width: 48px" type="button" value="初始化" id="initBtn" onclick="initConnect()" />
 							<input name="closeBtn" style="width: 48px" type="button" value="断开" id="closeBtn" onclick="closeConnect()" />

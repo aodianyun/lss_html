@@ -1,0 +1,4 @@
+/* This CSS stylesheet defines styles used by rtmp video in a html page */
+/* The link must be like this <link rel="stylesheet" type="text/css" href="rtmpVideo.css" /> */
+
+#flashContent { display:none; }

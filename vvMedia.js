@@ -302,7 +302,7 @@ Video.prototype.pausePlay = function () {
 // 停止播放
 Video.prototype.stopPlay = function () {
 	if (this.handle) {
-		this.handle.stopPlay();
+		this.handle.stopPlay_();
 	}
 }
 // 暂停上麦/播放
@@ -313,7 +313,7 @@ Video.prototype.pause = function () {
 // 停止上麦/播放
 Video.prototype.stop = function () {
 	this.stopPublish();
-	this.stopPlay();
+	this.stopPlay_();
 }
 // 切换务器，initConnect()之后调用有效
 Video.prototype.changeServer = function (addr/*string*/, lineType/*string*/){
@@ -325,6 +325,46 @@ Video.prototype.changeServer = function (addr/*string*/, lineType/*string*/){
 		return this.handle.changeServer(encodeFlashData(addr), encodeFlashData(lineType));
 	}
 }
+// 获取play累计流量
+Video.prototype.getByteCount = function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getByteCount();
+	}
+}
+//获取play平均码率
+Video.prototype.getAvgBitrate = function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getAvgBitrate();
+	}
+}
+//获取play最大码率
+Video.prototype.getMaxBitrate = function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getMaxBitrate();
+	}
+}
+
+// 获取publish累计流量
+Video.prototype.getPublishByteCount = function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getPublishByteCount();
+	}
+}
+//获取publish平均码率
+Video.prototype.getPublishAvgBitrate = function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getPublishAvgBitrate();
+	}
+}
+//获取publish最大码率
+Video.prototype.getPublishMaxBitrate = function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getPublishMaxBitrate();
+	}
+}
+
+
+
 // 获取vvMedia版本
 Video.prototype.getClientVersion = function ()/*string*/{
 	if (this.handle) {
@@ -700,7 +740,7 @@ Video.prototype.addEventListener = function (callbackFunc) {
 	}
 }
 // 回调消息
-function callback(uuid, type, info) {
+function lssCallBack(uuid, type, info) {
 	if (globalUUID_CallbackFuncMap[uuid]){
 		globalUUID_CallbackFuncMap[uuid](type, info);
 	}
@@ -740,4 +780,5 @@ function createVideo(id, uuid, width, height, param) {
 		width, height,
 		swfVersionStr, xiSwfUrlStr,
 		flashvars, params, attributes);
+		swfobject.createCSS("#flashContent", "display:block;text-align:left;");
 }
