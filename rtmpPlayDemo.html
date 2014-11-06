@@ -11,13 +11,14 @@
 	<script type="text/javascript" src="vvMedia.js"></script>
 	<script type="text/javascript">
 	var LocString = String(window.document.location.href);
+
 	function getQueryStr(str) {
 		var rs = new RegExp("(^|)" + str + "=([^&]*)(&|$)", "gi").exec(LocString), tmp;
 		if (tmp = rs) {
 			return tmp[2];
 		}      
 		return "";
-	}
+	}	
 	</script>
 </head>
 
@@ -28,11 +29,14 @@
         	<td id="url" colspan="2">
                 <form action="" method="post" style="height: 30px">
 
-                    <label>服务器：</label><input id="rtmpAddr" style="width: 225px" type="text" value="rtmp.aodianyun.com:1936" disabled />
+                    <label>服务器：</label><input id="rtmpAddr" style="width: 370px" type="text" value="rtmp.aodianyun.com:1936" disabled />
                     <text id="rtmpLive" visible ="false" style="width: 95px" type="text" value="app" />
                     <input id="rtmpKey" style="display:none;" type="text" value="123456"/>
-                    <label>Stream(选填)：</label><input id="rtmpStream" style="width: 75px; background-color:#EEE" type="text" value="999999" />
+                    <label>Stream(选填)：</label><input id="rtmpStream" style="width: 125px; background-color:#EEE" type="text" value="999999" />
                     <text id="userID" style="display:none;"  value="10001" />
+                     <input id="timeStamp" style="display:none;" type="text" value="14321"/>
+                      <input id="ckey" style="display:none;" type="text" value="23345"/>
+                       <input id="pkey" style="display:none;" type="text" value="9876"/>
                 </form>
              </td>
         </tr>
@@ -201,6 +205,10 @@
 	var _camIndexArray = [];
 	var _micIndexArray = [];
 
+	var _ckey =document.getElementById("ckey");
+	var _timeStamp = document.getElementById("timeStamp");
+	var _pkey = document.getElementById("pkey");
+
 	var _mediaInfo = document.getElementById("mediaInfo");
 	var _streamInfo = document.getElementById("streamInfo");
 	//var _micList = document.getElementById("micList");
@@ -241,9 +249,41 @@
 	var _maxBitrate = document.getElementById("maxBitrate");
 	
 	function onBodyReady(){
-		_rtmpAddr.value = getQueryStr("addr");
+
+		// _rtmpAddr.value = getQueryStr("addr");
+		// _rtmpLive.value = getQueryStr("app");
+		// _rtmpStream.value = getQueryStr("stream");
+		// _rtmpKey.value = getQueryStr("key");
+
+		 _ckey.value = getQueryStr("ck");
+		 _timeStamp.value  = getQueryStr("t");
+		 _pkey.value = getQueryStr("pk");
+
+		 if(_ckey.value && _timeStamp.value)
+		 {
+		 	_rtmpAddr.value = getQueryStr("addr")+ "?k=" +  _ckey.value + "&t=" + _timeStamp.value;
+		 }
+		 else if(!_ckey.value && _timeStamp.value)
+		 {
+		 	_rtmpAddr.value = getQueryStr("addr") + "&t=" + _timeStamp.value;
+		 }
+		 else if(_ckey.value && !_timeStamp.value)
+		 {
+		 	_rtmpAddr.value = getQueryStr("addr")+ "?k=" +  _ckey.value ;
+		 }
+		 else
+		 {
+		 	_rtmpAddr.value = getQueryStr("addr");
+		 }
+
+				if(_pkey.value){
+			_rtmpStream.value = getQueryStr("stream") + "?k=" + _pkey.value;
+		}
+		else{
+			_rtmpStream.value = getQueryStr("stream");
+		}
+	
 		_rtmpLive.value = getQueryStr("app");
-		_rtmpStream.value = getQueryStr("stream");
 		_rtmpKey.value = getQueryStr("key");
 	}
 	function onSwfReady(){

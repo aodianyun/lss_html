@@ -31,19 +31,25 @@
 					
 					<td style="height: 260px; width: 320px;">
 						<form action="" method="post" style="width: 320px; height: 260px; font-family: 宋体; font-size: 12px;">
-							<label id="Label2">客户端版本：</label><input name="clientVersion" id="clientVersion" style="width: 150px" type="text" /><br />
-							<label id="Label4">flash 版本：</label><input name="flashVersion" id="flashVersion" style="width: 150px" type="text" /><br />
-							<label id="Label5">最低支持插件版本：</label><input name="lowestSupportHQVersion" id="lowestSupportHQVersion" style="width: 150px" type="text" /><br />
-							<label id="Label6">实际使用插件版本：</label><input name="HQVersion" id="HQVersion" style="width: 150px" type="text" /><br />
-							<label id="Label16">session:</label><input name="session" style="width: 75px" type="text" id="session" value="TestSession" />
-							<label id="Label17">ID:</label><input name="userID" style="width: 48px" type="text" id="userID" value="Test" />
-							<input name="isHD" type="checkbox" id="isHD" />						
-							<label id="Label7">高清</label>			
+							<!-- <label id="Label2">客户端版本：</label> --><input name="clientVersion" id="clientVersion" style="display:none;" type="text" />
+							<!-- <label id="Label4">flash 版本：</label> --><input name="flashVersion" id="flashVersion" style="display:none;"  type="text" />
+						<!-- 	<label id="Label5">最低支持插件版本：</label> --><input name="lowestSupportHQVersion" id="lowestSupportHQVersion" style="display:none;"  type="text" /><br />
+							<!-- <label id="Label6">实际使用插件版本：</label> --><input name="HQVersion" id="HQVersion" style="display:none;"  type="text" />
+							<!-- <!-- <label id="Label16">session:</label> --><input name="session" style="display:none;"  type="text" id="session" value="TestSession" /> 
+							<!-- <label id="Label17">ID:</label> --><input name="userID" style="display:none;"  type="text" id="userID" value="Test" />
+												
+								
+
 							<input style="display:none;" name="isUDP" type="checkbox" id="isUDP" /><label style="display:none;" id="Label8">UDP</label>
-							<input name="rtmpAddr" style="width: 135px" type="text" id="rtmpAddr" value="rtmp://lssplay.aodianyun.com/demo" />
-							<input name="rtmpLive" style="width: 46px" type="text" id="rtmpLive" value="xym_test" />
-							<input name="rtmpStream" style="width: 46px" type="text" id="rtmpStream" value="game" />
-							<label >密码:<input name="key" type="text" id="key" value="key" /></label><br />
+							<br /><br /><br /><br /><br />
+							<label id="Label7">服务器： </label>		
+							<input name="rtmpAddr" style="width: 260px" type="text" id="rtmpAddr" value="rtmp://lssplay.aodianyun.com/demo" /><br/>
+							<input name="rtmpLive" style="display:none;"  type="text" id="rtmpLive" value="xym_test" /> 
+	
+							<label id="Label7">Stream： </label> <input name="rtmpStream" style="width: 135px" type="text" id="rtmpStream" value="game" />
+							<input name="isHD" type="checkbox" id="isHD" />	<label id="Label7">高清</label>	<br/>
+						
+							<!-- <label >密码:</label> --> <input name="key" type="text" style="display:none;"  id="key" value="key" />
 							<input name="initBtn" style="width: 48px" type="button" value="初始化" id="initBtn" onclick="initConnect()" />
 							<input name="closeBtn" style="width: 48px" type="button" value="断开" id="closeBtn" onclick="closeConnect()" />
 							<input name="publishBtn" style="width: 48px" type="button" value="上麦" id="publishBtn" onclick="startPublish()" />
