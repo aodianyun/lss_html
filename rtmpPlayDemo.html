@@ -144,8 +144,8 @@
                     <tr id="view_display_info">
                         <td>
                             <form action="" method="post" style="right:0">
-                              <textarea rows="1" cols="20" style="width: 635px; height: 135px; background-color:#EEE" id="mediaInfo" readonly="readonly"></textarea>
-                            <!--   <textarea rows="1" cols="20" style="width: 0px; height: 135px; background-color:#EEE" id="streamInfo" readonly="readonly"></textarea> -->
+                              <textarea rows="1" cols="20" style="width: 375px; height: 135px; background-color:#EEE;float:left" id="mediaInfo" readonly="readonly"></textarea>
+                               <textarea rows="1" cols="20" style="width: 252px; height: 135px; background-color:#EEE" id="streamInfo" readonly="readonly"></textarea> 
                             </form>
                         </td>
                     </tr>
@@ -204,15 +204,11 @@
 <script type="text/javascript">
 	var _camIndexArray = [];
 	var _micIndexArray = [];
-
 	var _ckey =document.getElementById("ckey");
 	var _timeStamp = document.getElementById("timeStamp");
 	var _pkey = document.getElementById("pkey");
-
 	var _mediaInfo = document.getElementById("mediaInfo");
 	var _streamInfo = document.getElementById("streamInfo");
-	//var _micList = document.getElementById("micList");
-	//var _camList = document.getElementById("camList");
 	var _isUseCam = true;
 	var _isUseMic = true;
 	var _isHD = false;
@@ -238,8 +234,6 @@
 	var _avgPing = 200;
 	var _audioChannelCount = 2;
 	var _audioBitPerSample = 16;
-	//var _clientVersion = document.getElementById("clientVersion");
-	//var _flashVersion = document.getElementById("flashVersion");
 	var _bufferTime = 2;
 	var _videoCodec = "h264";
 	var _audioCodec = "Nellymoser";
@@ -247,42 +241,27 @@
 	var _totalFlow = document.getElementById("totalFlow");
 	var _avgBitrate = document.getElementById("avgBitrate");
 	var _maxBitrate = document.getElementById("maxBitrate");
-	
+	var playStartTimestamp = Date.parse(new Date());
+
 	function onBodyReady(){
-
-		// _rtmpAddr.value = getQueryStr("addr");
-		// _rtmpLive.value = getQueryStr("app");
-		// _rtmpStream.value = getQueryStr("stream");
-		// _rtmpKey.value = getQueryStr("key");
-
 		 _ckey.value = getQueryStr("ck");
 		 _timeStamp.value  = getQueryStr("t");
 		 _pkey.value = getQueryStr("pk");
 
 		 if(_ckey.value && _timeStamp.value)
-		 {
 		 	_rtmpAddr.value = getQueryStr("addr")+ "?k=" +  _ckey.value + "&t=" + _timeStamp.value;
-		 }
 		 else if(!_ckey.value && _timeStamp.value)
-		 {
 		 	_rtmpAddr.value = getQueryStr("addr") + "&t=" + _timeStamp.value;
-		 }
 		 else if(_ckey.value && !_timeStamp.value)
-		 {
 		 	_rtmpAddr.value = getQueryStr("addr")+ "?k=" +  _ckey.value ;
-		 }
 		 else
-		 {
 		 	_rtmpAddr.value = getQueryStr("addr");
-		 }
 
-				if(_pkey.value){
+		if(_pkey.value)
 			_rtmpStream.value = getQueryStr("stream") + "?k=" + _pkey.value;
-		}
-		else{
+		else
 			_rtmpStream.value = getQueryStr("stream");
-		}
-	
+		
 		_rtmpLive.value = getQueryStr("app");
 		_rtmpKey.value = getQueryStr("key");
 	}
@@ -314,10 +293,12 @@
 			//_clientVersion.value = player1.getClientVersion();
 			var id=window.setInterval("setByteCount()",1000); 	
 			var id1=window.setInterval("setAvgBitrate()",1000); 
-			var id2=window.setInterval("setMaxBitrate()",1000); 			
+			var id2=window.setInterval("setMaxBitrate()",1000); 	
+			var id3=window.setInterval("setPlayStreamInfo()",1000); 
 		}
 	} 
-	
+
+
 	function setByteCount(){
 		var tempTotalFlow = player1.getByteCount();
 
@@ -330,17 +311,33 @@
 			}
 		}								
 	} 
- 
 	function setAvgBitrate(){
-		var tempAvgBitrate= player1.getAvgBitrate();
-		_avgBitrate.value = (tempAvgBitrate / 1000).toFixed(2) + "kb";
+		var playTimestamp = Date.parse(new Date());
+		var tempTotalFlow = player1.getByteCount();
+		_avgBitrate.value = ((tempTotalFlow*8)/(playTimestamp - playStartTimestamp)).toFixed(2) + "kb" ;
 	}
-
 	function setMaxBitrate(){
-		var tempMaxBitrate = player1.getMaxBitrate();
-		_maxBitrate.value = (tempMaxBitrate / 1000).toFixed(2) + "kb";	
-	}
+		var tempTotalFlow = player1.getMaxBitrate();
+		_maxBitrate.value = (tempTotalFlow/1000) .toFixed(2) + "kb";	
+	}	
+	function setPlayStreamInfo(){
+		//_streamInfo.value =  player1.getPlayStreamInfo();	
+		//_streamInfo.value = player1.getCurrentFPS();
+		var _playStreamInfoStr = "当前帧率:	" + player1.getCurrentFPS().toFixed(2) +"\n" +
+										"音频码率:	" + player1.getAudioBytesPerSecond().toFixed(2) + "(kbps)\n" +
+										"视频码率:	" + player1.getVideoBytesPerSecond().toFixed(2)  + "(kbps)\n" + 
+										"当前码率:	" + player1 .getCurrentBytesPerSecond().toFixed(2) + "(kbps)\n"+ 
+										 "接受字节数:	" + player1.getCurrentByteCount() + "(byte)\n"+
+										"缓冲区时间:	" + player1.getBufferLength() +"(s)\n"+
+										"音频缓冲区时间:	" + player1.getAudioBufferLength() + "(s)\n"+
+										"视频缓冲区时间:	" + player1.getVideoBufferLength() + "(s)\n"+
+										"音频编码:	" + player1.getAudioCodec() +"\n"+ 
+										"视频编码:	" + player1.getVideoCodec() +"\n"+ 
+										"原始视频宽度:	" + player1.getVideoWidth().toString()+ "\n"+
+										"原始视频高度:	"+ player1.getVideoHeight().toString()+ "\n";
+		_streamInfo.value  = _playStreamInfoStr;
 
+	} 
 	function initConnect(){
 		if (player1)
 			player1.initConnect( _rtmpAddr.value,
@@ -355,7 +352,6 @@
 							_session,
 							_isUDP,
 							_rtmpKey.value);
-			//_flashVersion.value = player1.getFlashVersion();
 	}
 	function closeConnect()
 	{
@@ -413,6 +409,7 @@
 						   0,
 						   _volume.value,
 						   _isMute.checked);
+		playStartTimestamp = Date.parse(new Date()); 
 	}
 	function pause()
 	{
@@ -446,7 +443,7 @@
 					break;
 				}
 			}
-			player1.setVideoCodec(micID);
+			player1.setAudioCodec(micID);
 		}
 	}
 

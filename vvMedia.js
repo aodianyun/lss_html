@@ -325,6 +325,18 @@ Video.prototype.changeServer = function (addr/*string*/, lineType/*string*/){
 		return this.handle.changeServer(encodeFlashData(addr), encodeFlashData(lineType));
 	}
 }
+//获取play流信息
+Video.prototype.getPlayStreamInfo = function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getPlayStreamInfo();  
+	}
+}
+//获取publish流信息
+Video.prototype.getPublishStreamInfo = function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getPublishStreamInfo();
+	}
+}
 // 获取play累计流量
 Video.prototype.getByteCount = function () /*Number*/{
 	if (this.handle) {
@@ -362,6 +374,105 @@ Video.prototype.getPublishMaxBitrate = function () /*Number*/{
 		return this.handle.getPublishMaxBitrate();
 	}
 }
+
+//  当前帧率
+Video.prototype.getCurrentFPS= function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getCurrentFPS();
+	}
+}
+//音频码率
+Video.prototype.getAudioBytesPerSecond= function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getAudioBytesPerSecond();
+	}
+}
+//视频码率
+Video.prototype.getVideoBytesPerSecond= function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getVideoBytesPerSecond();
+	}
+}
+//当前码率
+Video.prototype.getCurrentBytesPerSecond= function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getCurrentBytesPerSecond();
+	}
+}
+//获取字节数
+Video.prototype.getCurrentByteCount= function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getCurrentByteCount();
+	}
+}
+//缓冲区时间
+Video.prototype.getBufferLength= function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getBufferLength();
+	}
+}
+//音频缓冲区时间
+Video.prototype.getAudioBufferLength= function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getAudioBufferLength();
+	}
+}
+//视频缓冲区时间
+Video.prototype.getVideoBufferLength= function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getVideoBufferLength();
+	}
+}
+//音频编码
+Video.prototype.getAudioCodec= function () /*String*/{
+	if (this.handle) {
+		return this.handle.getAudioCodec();
+	}
+}
+//视频编码
+Video.prototype.getVideoCodec= function () /*String*/{
+	if (this.handle) {
+		return this.handle.getVideoCodec();
+	}
+}
+//原始视频宽
+Video.prototype.getVideoWidth= function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getVideoWidth();
+	}
+}
+//原始视频高
+Video.prototype.getVideoHeight= function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getVideoHeight();
+	}
+}
+//上麦视频宽
+Video.prototype.getPublishVideoWidth= function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getPublishVideoWidth();
+	}
+}
+//上麦视频高
+Video.prototype.getPublishVideoHeight= function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getPublishVideoHeight();
+	}
+}
+
+//音频设备
+Video.prototype.getMicName= function () /*String*/{
+	if (this.handle) {
+		return this.handle.getMicName();
+	}
+}
+ //视频设备
+Video.prototype.getCameraName= function () /*String*/{
+	if (this.handle) {
+		return this.handle.getCameraName();
+	}
+}
+
 
 
 
@@ -767,6 +878,9 @@ function createVideo(id, uuid, width, height, param) {
 	var flashvars = {};
 	flashvars.uuid = uuid;
 	var params = {};
+	 // var params = { 
+  //        allowScriptAccess:"always"
+  //   };
 	params.quality = param["quality"] || "high";
 	params.bgcolor = param["bgcolor"] || "#ffffff";
 	params.allowscriptaccess = param["allowscriptaccess"] || "sameDomain";

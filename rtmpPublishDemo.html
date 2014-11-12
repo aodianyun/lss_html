@@ -144,8 +144,8 @@
                     <tr id="view_display_info">
                         <td>
                             <form action="" method="post" style="right:0">
-                              <textarea rows="1" cols="20" style="width: 635px; height: 135px; background-color:#EEE" id="mediaInfo" readonly="readonly"></textarea>
-                             <!--  <textarea rows="1" cols="20" style="width: 222px; height: 135px; background-color:#EEE" id="streamInfo" readonly="readonly"></textarea> -->
+                              <textarea rows="1" cols="20" style="width: 375px; height: 135px; background-color:#EEE;float:left" id="mediaInfo" readonly="readonly"></textarea>
+                               <textarea rows="1" cols="20" style="width: 252px; height: 135px; background-color:#EEE" id="streamInfo" readonly="readonly"></textarea> 
                             </form>
                         </td>
                     </tr>
@@ -235,8 +235,6 @@
 	var _avgPing = 200;
 	var _audioChannelCount = 2;
 	var _audioBitPerSample = 16;
-	//var _clientVersion = document.getElementById("clientVersion");
-	//var _flashVersion = document.getElementById("flashVersion");
 	var _bufferTime = 2;
 	var _videoCodec = "h264";
 	var _audioCodec = "Nellymoser";
@@ -244,14 +242,13 @@
 	var _totalFlow = document.getElementById("totalFlow");
 	var _avgBitrate = document.getElementById("avgBitrate");
 	var _maxBitrate = document.getElementById("maxBitrate");
+	var publishStartTimestamp = Date.parse(new Date());
 	
 	function onBodyReady(){
 		// _rtmpAddr.value = getQueryStr("addr");
 		// _rtmpLive.value = getQueryStr("app");
 		// _rtmpStream.value = getQueryStr("stream");
 		// _rtmpKey.value = getQueryStr("key");
-
-		
 		 _ckey.value = getQueryStr("ck");
 		 _timeStamp.value  = getQueryStr("t");
 		 _pkey.value = getQueryStr("pk");
@@ -273,7 +270,7 @@
 		 	_rtmpAddr.value = getQueryStr("addr");
 		 }
 
-				if(_pkey.value){
+		if(_pkey.value){
 			_rtmpStream.value = getQueryStr("stream") + "?k=" + _pkey.value;
 		}
 		else{
@@ -306,14 +303,12 @@
 				_camList.options.add(item);
 				_camIndexArray.push(index);
 			}
-			//vvMediaVersion | clientVersion
-			//_clientVersion.value = player1.getClientVersion(); 
 			var id=window.setInterval("setPublishByteCount()",1000); 	
 			var id1=window.setInterval("setPublishAvgBitrate()",1000); 
 			var id2=window.setInterval("setPublishMaxBitrate()",1000); 
+			var id3=window.setInterval("setPublishStreamInfo()",1000); 
 		}
 	}
-
 	function setPublishByteCount(){
 		var tempTotalFlow = player1.getPublishByteCount();
 		if (tempTotalFlow>0) 
@@ -325,17 +320,37 @@
 			}			
 		}								
 	} 
- 
 	function setPublishAvgBitrate(){
-		var tempAvgBitrate= player1.getPublishAvgBitrate();
-		_avgBitrate.value = (tempAvgBitrate / 1000).toFixed(2) + "kb";
+		var tempTotalFlow = player1.getPublishByteCount();
+		var publishTimestamp = Date.parse(new Date());
+		_avgBitrate.value = ((tempTotalFlow*8)/(publishTimestamp - publishStartTimestamp)).toFixed(2) + "kb" ;
 	}
-
 	function setPublishMaxBitrate(){
-		var tempMaxBitrate = player1.getPublishMaxBitrate();
-		_maxBitrate.value = (tempMaxBitrate / 1000).toFixed(2) + "kb";	
+		var tempTotalFlow = player1.getPublishMaxBitrate();
+		_maxBitrate.value = (tempTotalFlow/1000) .toFixed(2) + "kb";	
 	}
+	function setPublishStreamInfo(){
+	//	_streamInfo.value =  player1.getPublishStreamInfo();	
 
+		var _publishStreamInfoStr = "当前帧率:	" + player1.getCurrentFPS().toFixed(2) +"\n" +
+										"音频码率:	" + player1.getAudioBytesPerSecond().toFixed(2) + "(kbps)\n" +
+										"视频码率:	" + player1.getVideoBytesPerSecond().toFixed(2)  + "(kbps)\n" + 
+										"当前码率:	" + player1 .getCurrentBytesPerSecond().toFixed(2) + "(kbps)\n"+ 
+										 "发送字节数:	" + player1.getCurrentByteCount() + "(byte)\n"+
+										// "缓冲区时间:	" + player1.getBufferLength() +"(s)\n"+
+										// "音频缓冲区时间:	" + player1.getAudioBufferLength() + "(s)\n"+
+										// "视频缓冲区时间:	" + player1.getVideoBufferLength() + "(s)\n"+
+										"音频编码:	" + player1.getAudioCodec() +"\n"+ 
+										"视频编码:	" + player1.getVideoCodec() +"\n"+ 
+										// "原始视频宽度:	" + player1.getVideoWidth().toString()+ "\n"+
+										// "原始视频高度:	"+ player1.getVideoHeight().toString()+ "\n"+
+										 "原始视频宽度:	" + player1.getPublishVideoWidth()+ "\n"+
+										 "原始视频高度:	"+ player1.getPublishVideoHeight()+ "\n"+
+										"音频设备:	" + player1.getMicName() +"\n"+ 
+										"视频设备:	" + player1.getCameraName() ;
+		_streamInfo.value  = _publishStreamInfoStr;  
+
+	} 
 	function initConnect(){
 		if (player1)
 			player1.initConnect( _rtmpAddr.value,
@@ -350,7 +365,6 @@
 							_session,
 							_isUDP,
 							_rtmpKey.value);
-			//_flashVersion.value = player1.getFlashVersion();
 	}
 	function closeConnect()
 	{
@@ -359,6 +373,7 @@
 	}
 	function startPublish()
 	{
+		publishStartTimestamp = Date.parse(new Date());
 		if (player1) {
 			var micID = -1;
 			for(var i=0; i<_micIndexArray.length; i++)
@@ -397,6 +412,7 @@
 							 _isUDP,
 							 _isMute.checked);
 		}
+
 	}
 	function startPlay()
 	{
@@ -441,7 +457,7 @@
 					break;
 				}
 			}
-			player1.setVideoCodec(micID);
+			player1.setAudioCodec(micID);
 		}
 	}
 	function setCam()
@@ -470,10 +486,10 @@
 		}
 	}
 	function setVideoDisplaySize() {
-	if (player1) {
-		player1.setVideoDisplaySize(width*3, height*3);
+		if (player1) {
+			player1.setVideoDisplaySize(width*3, height*3);
+		}
 	}
-}
 	function setCameraMode(){
 		if(player1){
 			player1.setCameraMode(_width.value, _height.value, _videoFPS.value);
