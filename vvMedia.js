@@ -78,6 +78,7 @@ Video.prototype.onSwfReady = function () {
 }
 // 初始化连接
 // 注：如果rtmpAddr有多个，使用英文逗号分割
+
 Video.prototype.initConnect = function (rtmpAddr,/*string*/
 										rtmpLive,/*string*/
 										rtmpStream,/*string*/
@@ -131,6 +132,14 @@ Video.prototype.initConnect = function (rtmpAddr,/*string*/
 								encodeFlashData(key));
 	}
 }
+
+
+Video.prototype.initConnectad = function () {
+	if (this.handle) {
+		this.handle.initConnectad();
+	}
+} 
+
 // 关闭连接
 Video.prototype.closeConnect = function () {
 	if (this.handle) {
@@ -254,13 +263,14 @@ Video.prototype.stopPublish = function () {
 	}
 }
 // 播放
-Video.prototype.startPlay = function ( rtmpStream, /*string*/
+Video.prototype.startPlay_ = function ( rtmpStream, /*string*/
 										bufferTime,/*uint*/
 									   speedupRange,/*uint reserved,set 0*/
 									   speedupTime,/*uint reserved,set 0*/
 									   speedupSpeed,/*uint reserved,set 0*/
 									   volume,/*uint*/
 									   isMute/*Boolean*/) {
+
 	if (this.handle) {
 		if (typeof isMute != "boolean"){
 			return;
@@ -290,9 +300,17 @@ Video.prototype.startPlay = function ( rtmpStream, /*string*/
 		}else{
 			return;
 		}
-		this.handle.startPlay(rtmpStream, bufferTime, speedupRange, speedupTime, speedupSpeed, volume, isMute);
+		//alert("String:"+String(rtmpStream));
+		this.handle.startPlay_(rtmpStream, bufferTime, speedupRange, speedupTime, speedupSpeed, volume, isMute);
 	}
 }
+
+Video.prototype.testDisplay = function () {
+	if (this.handle) {
+		this.handle.testDisplay();
+	}
+}
+
 // 暂停播放
 Video.prototype.pausePlay = function () {
 	if (this.handle) {
@@ -472,9 +490,6 @@ Video.prototype.getCameraName= function () /*String*/{
 		return this.handle.getCameraName();
 	}
 }
-
-
-
 
 // 获取vvMedia版本
 Video.prototype.getClientVersion = function ()/*string*/{

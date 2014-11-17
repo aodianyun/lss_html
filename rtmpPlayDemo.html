@@ -78,7 +78,7 @@
                                                     case "new connect":
                                                         break;
 													case SCHEDULE_FINISH:
-														startPlay();
+														startPlay_();
 														break;
 													case RTMP_PEPFLASH:
 														alert("警告：\n\n系统检测到您正在使用 Pepper Flash Player，\n\n此版本的 Flash 并不完善，请尝试更换IE浏览器，\n\n或百度“如何禁用Pepper Flash”。");
@@ -167,8 +167,9 @@
                 <tr id="view_control_onoff">
                 	<td>
 			<form action="" method="post" style="height: 160px;">
-				<input style="width: 90px; height:90px" type="button" value="播放" id="playBtn" onclick="initConnect()" />
+				<input style="width: 90px; height:90px" type="button" value="播放" id="playBtn" onclick="initConnect();initConnectad()" />
 				<input style="width: 90px; height:90px" type="button" value="停止" id="stopBtn" onclick="closeConnect()" />
+				
 			</form>
                     </td>
                 </tr>
@@ -243,6 +244,12 @@
 	var _maxBitrate = document.getElementById("maxBitrate");
 	var playStartTimestamp = Date.parse(new Date());
 
+	function testDisplay()
+	{
+		alert("hello");
+		if (player1)
+			player1.testDisplay();		
+	}
 	function onBodyReady(){
 		 _ckey.value = getQueryStr("ck");
 		 _timeStamp.value  = getQueryStr("t");
@@ -353,6 +360,15 @@
 							_isUDP,
 							_rtmpKey.value);
 	}
+
+
+	function initConnectad()
+	{
+		if (player1)
+			player1.initConnectad();
+		//alert("heiho");
+	}
+
 	function closeConnect()
 	{
 		if (player1)
@@ -399,10 +415,10 @@
 							 _isMute.checked);
 		}
 	}
-	function startPlay()
+	function startPlay_()
 	{
 		if (player1)
-			player1.startPlay( _rtmpStream.value,
+			player1.startPlay_( _rtmpStream.value,
 							_bufferTime,
 						   0,
 						   0,
