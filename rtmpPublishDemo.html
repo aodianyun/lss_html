@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -135,11 +135,11 @@
                         </p>
                         <script type="text/javascript">
                             var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
-                            document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
-                                            + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
+                            // document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
+                            //                 + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
                         </script>
                     </div>
-                    </td>
+                    </td> 
                     </tr>
                     <tr id="view_display_info">
                         <td>
@@ -172,7 +172,7 @@
                 </tr>
                 <tr id="view_control_onoff">
                 	<td>
-			<form action="" method="post" style="height: 160px;">
+			<form action="" method="post" style="height: 120px;">
 				<input style="width: 90px; height:90px" type="button" value="上麦" id="publishBtn" onclick="initConnect()" />
 				<input style="width: 90px; height:90px" type="button" value="停止" id="stopBtn" onclick="closeConnect()" />
 			</form>
@@ -184,14 +184,28 @@
                         	<label><b>视频参数</b></label><br />
                             <label>&nbsp;&nbsp;&nbsp;&nbsp;宽：</label><input style="width: 90px" type="text" value="320" id="width" onchange="setCameraMode()" />(1~640)<br />
                             <label>&nbsp;&nbsp;&nbsp;&nbsp;高：</label><input style="width: 90px" type="text" value="240" id="height" onchange="setCameraMode()" />(1~480)<br />
-                            <label>&nbsp;&nbsp;帧率：</label><input type="text"  style="width: 90px" value="10" id="videoFPS" onchange="setCameraMode()" />(1~25)<br />
-                            <label>&nbsp;&nbsp;码率：</label><input style="width: 90px" type="text" value="256" id="videoKBitrate" onchange="setCameraQuality()" />(96~512)(kbps)<br /><br />
+                            <label>&nbsp;&nbsp;帧率：</label><input type="text"  style="width: 90px" value="30" id="videoFPS" onchange="setCameraMode()" />(1~60)<br />
+                            <label>&nbsp;&nbsp;码率：</label><input style="width: 90px" type="text" value="512" id="videoKBitrate" onchange="setCameraQuality()" />(32~2048)(kbps)<br />
+                            <label>关键帧：</label><input style="width: 90px" type="text" value="90" id="keyFrameInterval" onchange="setKeyFrameInterval()" />(1~180)<br />
+                            <br />
+
+
                             <label><b>音频参数</b></label><br />
                             <label>&nbsp;&nbsp;码率：</label><input style="width: 90px" type="text" value="44" id="audioKBitrate" onchange="setAudioBitrate()" />(16~48)(kbps)<br />
                             <label>采样率：</label><input style="width: 90px" type="text" value="44100" id="audioSamplerate" onchange="setAudioSamplerate()" />(16000~48000)(Hz)<br /><br />
                     		<!-- <label><b>版本号</b></label><br /> -->
                             <!--   <label>客户端：</label> --><input id="clientVersion" style="display:none;" type="text" disabled />
-                        </form>
+                            <label><b>全屏大小</b></label><br /> 
+                             <label>全屏模式：</label>
+                             <select  id="fullScreenMode"  style='width:120px' onchange="setFullScreenMode()" >
+  								 <option value="1"  >默认（保持比例）</option>
+  								 <option value="2"  >铺满屏幕</option>
+							  	 <!--<option value="3"  >原始比例</option>  -->
+							  	 <option value="3"  >原始尺寸</option> 
+							 
+							</select>
+
+                      </form>
                     </td>
                 </tr>
                 </table>
@@ -242,7 +256,9 @@
 	var _totalFlow = document.getElementById("totalFlow");
 	var _avgBitrate = document.getElementById("avgBitrate");
 	var _maxBitrate = document.getElementById("maxBitrate");
-	var publishStartTimestamp = Date.parse(new Date());
+	var _publishStartTimestamp = Date.parse(new Date());
+	var _fullScreenMode =  document.getElementById("fullScreenMode");
+	var _keyFrameInterval =  document.getElementById("keyFrameInterval");
 	
 	function onBodyReady(){
 		// _rtmpAddr.value = getQueryStr("addr");
@@ -323,7 +339,7 @@
 	function setPublishAvgBitrate(){
 		var tempTotalFlow = player1.getPublishByteCount();
 		var publishTimestamp = Date.parse(new Date());
-		_avgBitrate.value = ((tempTotalFlow*8)/(publishTimestamp - publishStartTimestamp)).toFixed(2) + "kb" ;
+		_avgBitrate.value = ((tempTotalFlow*8)/(publishTimestamp - _publishStartTimestamp)).toFixed(2) + "kb" ;
 	}
 	function setPublishMaxBitrate(){
 		var tempTotalFlow = player1.getPublishMaxBitrate();
@@ -335,8 +351,9 @@
 		var _publishStreamInfoStr = "当前帧率:	" + player1.getCurrentFPS().toFixed(2) +"\n" +
 										"音频码率:	" + player1.getAudioBytesPerSecond().toFixed(2) + "(kbps)\n" +
 										"视频码率:	" + player1.getVideoBytesPerSecond().toFixed(2)  + "(kbps)\n" + 
-										"当前码率:	" + player1 .getCurrentBytesPerSecond().toFixed(2) + "(kbps)\n"+ 
-										 "发送字节数:	" + player1.getCurrentByteCount() + "(byte)\n"+
+										"当前码率:	" + player1.getCurrentBytesPerSecond().toFixed(2) + "(kbps)\n"+ 
+										"关键帧间隔:     "+  player1.getKeyFrameInterval() +   "\n" +
+										"发送字节数:	" + player1.getCurrentByteCount() + "(byte)\n"+
 										// "缓冲区时间:	" + player1.getBufferLength() +"(s)\n"+
 										// "音频缓冲区时间:	" + player1.getAudioBufferLength() + "(s)\n"+
 										// "视频缓冲区时间:	" + player1.getVideoBufferLength() + "(s)\n"+
@@ -373,7 +390,7 @@
 	}
 	function startPublish()
 	{
-		publishStartTimestamp = Date.parse(new Date());
+		_publishStartTimestamp = Date.parse(new Date());
 		if (player1) {
 			var micID = -1;
 			for(var i=0; i<_micIndexArray.length; i++)
@@ -402,7 +419,7 @@
 							 _audioKBitrate.value,
 							 _audioSamplerate.value,
 							 _videoFPS.value,
-							 _videoFPS.value * 3,
+							 _keyFrameInterval.value, 
 							 _videoKBitrate.value,
 							 _videoQuality,
 							 _volume.value,
@@ -434,6 +451,12 @@
 	{
 		if (player1)
 			player1.stop();
+	}
+	function setFullScreenMode()
+	{
+		if (player1){
+			player1.setFullScreenMode(_fullScreenMode.value);
+		}
 	}
 	function setAudioCodec(){
 		if (player1){
@@ -498,6 +521,11 @@
 	function setCameraQuality(){
 		if(player1){
 			player1.setCameraQuality(_videoKBitrate.value, _videoQuality);
+		}
+	}
+	function setKeyFrameInterval(){
+		if(player1){
+			player1.setKeyFrameInterval(_keyFrameInterval.value);
 		}
 	}
 	function setAudioBitrate(){

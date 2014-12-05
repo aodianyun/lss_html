@@ -90,7 +90,7 @@ Video.prototype.initConnect = function (rtmpAddr,/*string*/
 										isHD,/*boolean*/
 										session,/*string*/
 										isUDP,/*boolean*/
-										key/*string*/) {
+										key) {
 	if (this.handle) {
 		if (typeof rtmpAddr != "string"
 			|| typeof rtmpLive != "string"
@@ -129,7 +129,8 @@ Video.prototype.initConnect = function (rtmpAddr,/*string*/
 								isHD,
 								encodeFlashData(session),
 								isUDP,
-								encodeFlashData(key));
+								encodeFlashData(key)
+								);
 	}
 }
 
@@ -164,7 +165,7 @@ Video.prototype.startPublish = function (width,/*uint*/
 										isUseMic,/*boolean*/
 										isHD,/*boolean*/
 										isUDP,/*boolean*/
-										isMute/*boolean*/) {
+										isMute) {
 	if (this.handle) {
 		if (typeof audioCodec != "string"
 			|| typeof videoCodec != "string"
@@ -250,6 +251,8 @@ Video.prototype.startPublish = function (width,/*uint*/
 								isMute);
 	}
 }
+
+
 // 暂停上麦
 Video.prototype.pausePublish = function () {
 	if (this.handle) {
@@ -304,12 +307,12 @@ Video.prototype.startPlay_ = function ( rtmpStream, /*string*/
 		this.handle.startPlay_(rtmpStream, bufferTime, speedupRange, speedupTime, speedupSpeed, volume, isMute);
 	}
 }
-
-Video.prototype.testDisplay = function () {
-	if (this.handle) {
-		this.handle.testDisplay();
-	}
-}
+// //测试接口
+// Video.prototype.testDisplay = function () {
+// 	if (this.handle) {
+// 		this.handle.testDisplay();
+// 	}
+// }
 
 // 暂停播放
 Video.prototype.pausePlay = function () {
@@ -415,6 +418,12 @@ Video.prototype.getVideoBytesPerSecond= function () /*Number*/{
 Video.prototype.getCurrentBytesPerSecond= function () /*Number*/{
 	if (this.handle) {
 		return this.handle.getCurrentBytesPerSecond();
+	}
+}
+//获取关键帧间隔
+Video.prototype.getKeyFrameInterval= function () /*Number*/{
+	if (this.handle) {
+		return this.handle.getKeyFrameInterval();
 	}
 }
 //获取字节数
@@ -563,13 +572,23 @@ Video.prototype.getCamList = function ()/*array*/
 		return this.handle.getCamList();
 	}
 }
+//设置全屏模式,initConnect()之后调用有效
+Video.prototype.setFullScreenMode = function (fullScreenMode /*uint*/) {
+	if (this.handle) 
+		if (typeof fullScreenMode == "number" || typeof fullScreenMode == "string") {
+			fullScreenMode = parseInt(fullScreenMode);
+		}else{
+			return;
+		}
+		return this.handle.setFullScreenMode(fullScreenMode); 
+}
 // 设置高清模式，initConnect()之后调用有效
 Video.prototype.setHD = function (isHD /*boolean*/) {
 	if (this.handle) {
 		if (typeof isHD != "boolean"){
 			return;
 		}
-		return this.handle.setHD(isHD);
+		return this.handle.setHD(isHD); 
 	}
 }
 // 设置UDP模式，initConnect()之后调用有效
