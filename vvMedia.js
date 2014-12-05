@@ -1,4 +1,4 @@
-// play Event
+ // play Event
 var PLAY_ERROR = "RTMPMEDIA.PLAY.ERROR";
 var PLAY_INFO = "RTMPMEDIA.PLAY.INFO";
 var PLAY_NETSTREAM_INFO = "RTMPMEDIA.PLAY.NETSTREAM.INFO";
@@ -9,7 +9,7 @@ var PUBLISH_NETSTREAM_INFO = "RTMPMEDIA.PUBLISH.NETSTREAM.INFO";
 // schedul Event
 var SCHEDULE_RESULT = "SchedulRequest.Result";
 var SCHEDULE_ERROR = "SchedulRequest.Error";
-var SCHEDULE_INFO = "SchedulRequest.Info";
+var SCHEDULE_INFO = "SchedulRequest.Info"; 
 var SCHEDULE_FINISH = "RtmpMedia.Initialize.Success";
 // server version Event
 var GET_SVR_VERSION_ERR = "GetSvrVersion.Error";
