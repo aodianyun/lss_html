@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -26,9 +26,8 @@
 <div align="center" style="width: 960px; height: 100%; min-height:680px; margin:5px 5px 5px 5px; text-align:left">
 	<table id="demo" align="left" style="width: 100%">
         <tr>
-        	<td id="url" colspan="2">  
+        	<td id="url" colspan="2">
                 <form action="" method="post" style="height: 30px">
-
                     <label>服务器：</label><input id="rtmpAddr" style="width: 370px" type="text" value="rtmp.aodianyun.com:1936" disabled />
                     <text id="rtmpLive" visible ="false" style="width: 95px" type="text" value="app" />
                     <input id="rtmpKey" style="display:none;" type="text" value="123456"/>
@@ -53,7 +52,7 @@
         	<td id="view_display">
             	<table style=" margin-right:0; padding-right:0">
                     <tr id="view_display_video">
-                    <td id="videoDisplay" style="width: 640px; height: 505px;">
+                    <td id="videoDisplay" style="width: 640px; height: 480px;">
                     <script type="text/javascript">
                         try{
                             var width = document.getElementById("width").value;
@@ -64,7 +63,7 @@
                         var player1;
                         player1 = new Video( "player1",	//名称必须与 DIV id 一致，否则无法显示视频
                                             (width||640),
-                                            (height||505),
+                                            (height||480),
                                             function(type, info){
                                                switch(type)
                                                {
@@ -168,11 +167,11 @@
                 	<td>
 			<form action="" method="post" style="height: 160px;">
 				<input style="width: 90px; height:90px" type="button" value="播放" id="playBtn" onclick="initConnect();initConnectad()" />
-				<input style="width: 90px; height:90px" type="button" value="停止" id="stopBtn" onclick="closeConnect()" />
-				
+				<input style="width: 90px; height:90px" type="button" value="停止" id="stopBtn" onclick="closeConnect()" />			
 			</form>
                     </td>
                 </tr>
+
                 <tr id="view_control_mediaparam">
                 	<td>
                         <form action="" method="post" style="height: 200px;">
@@ -193,6 +192,17 @@
                     		<!-- <label><b>版本号</b></label><br />
                             <label>客户端：</label -->
                             	<input id="clientVersion" style="display:none;" disabled /> 
+
+                            <label><b>全屏大小</b></label><br /> 
+                             <label>全屏模式：</label>
+                             <select  id="fullScreenMode"  style='width:120px' onchange="setFullScreenMode()" >
+  								 <option value="1"  >默认（保持比例）</option>
+  								 <option value="2"  >铺满屏幕</option>
+							  	<!-- <option value="3"  >原始比例</option> -->
+							  	 <option value="3"  >原始尺寸</option>  
+
+							 
+							</select>
                         </form>
                     </td>
                 </tr>
@@ -205,9 +215,6 @@
 <script type="text/javascript">
 	var _camIndexArray = [];
 	var _micIndexArray = [];
-	var _ckey =document.getElementById("ckey");
-	var _timeStamp = document.getElementById("timeStamp");
-	var _pkey = document.getElementById("pkey");
 	var _mediaInfo = document.getElementById("mediaInfo");
 	var _streamInfo = document.getElementById("streamInfo");
 	var _isUseCam = true;
@@ -242,32 +249,46 @@
 	var _totalFlow = document.getElementById("totalFlow");
 	var _avgBitrate = document.getElementById("avgBitrate");
 	var _maxBitrate = document.getElementById("maxBitrate");
-	var playStartTimestamp = Date.parse(new Date());
+	var _playStartTimestamp = Date.parse(new Date());
+	var _fullScreenMode =  document.getElementById("fullScreenMode");
+     var _tTimeStamp = 0;
+	var _ctimeStamp = 0;
+    var _ckey = 0;
+    var _ptimeStamp = 0;
+    var _pkey = 0;
 
-	function testDisplay()
-	{
-		alert("hello");
-		if (player1)
-			player1.testDisplay();		
-	}
+	//测试接口
+	// function testDisplay()
+	// {
+	// 	alert("hello");
+	// 	if (player1)
+	// 		player1.testDisplay();		
+	// }
 	function onBodyReady(){
-		 _ckey.value = getQueryStr("ck");
-		 _timeStamp.value  = getQueryStr("t");
-		 _pkey.value = getQueryStr("pk");
+		 _ckey = getQueryStr("ck");
+		 _ctimeStamp = getQueryStr("ct");
+		 _pkey = getQueryStr("pk");
+         _ptimeStamp  = getQueryStr("pt");
 
-		 if(_ckey.value && _timeStamp.value)
-		 	_rtmpAddr.value = getQueryStr("addr")+ "?k=" +  _ckey.value + "&t=" + _timeStamp.value;
-		 else if(!_ckey.value && _timeStamp.value)
-		 	_rtmpAddr.value = getQueryStr("addr") + "&t=" + _timeStamp.value;
-		 else if(_ckey.value && !_timeStamp.value)
-		 	_rtmpAddr.value = getQueryStr("addr")+ "?k=" +  _ckey.value ;
-		 else
-		 	_rtmpAddr.value = getQueryStr("addr");
+         if(_tTimeStamp && !_ctimeStamp)
+            _ctimeStamp = _tTimeStamp; 
+        
+         //alert("\n_ckey: " + _ckey+"\n_ctimeStamp: " + _ctimeStamp+"\n_pkey: " + _pkey+"\n_ptimeStamp: " + _ptimeStamp); 
+         if(_ckey)
+            if(_ctimeStamp)
+                _rtmpAddr.value = getQueryStr("addr")+ "?k=" +  _ckey+ "&t=" + _ctimeStamp;
+            else
+                _rtmpAddr.value = getQueryStr("addr")+ "?k=" +  _ckey ;
+         else
+            _rtmpAddr.value = getQueryStr("addr");
 
-		if(_pkey.value)
-			_rtmpStream.value = getQueryStr("stream") + "?k=" + _pkey.value;
-		else
-			_rtmpStream.value = getQueryStr("stream");
+         if(_pkey)
+            if(_ptimeStamp)  
+                 _rtmpStream.value  = getQueryStr("stream")+ "?k=" +  _pkey+ "&t=" + _ptimeStamp;
+            else
+                 _rtmpStream.value = getQueryStr("stream") + "?k=" +  _pkey ;
+         else
+            _rtmpStream.value  = getQueryStr("stream");
 		
 		_rtmpLive.value = getQueryStr("app");
 		_rtmpKey.value = getQueryStr("key");
@@ -321,7 +342,7 @@
 	function setAvgBitrate(){
 		var playTimestamp = Date.parse(new Date());
 		var tempTotalFlow = player1.getByteCount();
-		_avgBitrate.value = ((tempTotalFlow*8)/(playTimestamp - playStartTimestamp)).toFixed(2) + "kb" ;
+		_avgBitrate.value = ((tempTotalFlow*8)/(playTimestamp - _playStartTimestamp)).toFixed(2) + "kb" ;
 	}
 	function setMaxBitrate(){
 		var tempTotalFlow = player1.getMaxBitrate();
@@ -334,7 +355,8 @@
 										"音频码率:	" + player1.getAudioBytesPerSecond().toFixed(2) + "(kbps)\n" +
 										"视频码率:	" + player1.getVideoBytesPerSecond().toFixed(2)  + "(kbps)\n" + 
 										"当前码率:	" + player1 .getCurrentBytesPerSecond().toFixed(2) + "(kbps)\n"+ 
-										 "接受字节数:	" + player1.getCurrentByteCount() + "(byte)\n"+
+										//"关键帧间隔:     " + player1.getKeyFrameInterval() +   "\n" +
+										"接受字节数:	" + player1.getCurrentByteCount() + "(byte)\n"+
 										"缓冲区时间:	" + player1.getBufferLength() +"(s)\n"+
 										"音频缓冲区时间:	" + player1.getAudioBufferLength() + "(s)\n"+
 										"视频缓冲区时间:	" + player1.getVideoBufferLength() + "(s)\n"+
@@ -425,7 +447,7 @@
 						   0,
 						   _volume.value,
 						   _isMute.checked);
-		playStartTimestamp = Date.parse(new Date()); 
+		_playStartTimestamp = Date.parse(new Date()); 
 	}
 	function pause()
 	{
@@ -436,6 +458,12 @@
 	{
 		if (player1)
 			player1.stop();
+	}
+	function setFullScreenMode()
+	{
+		if (player1){
+			player1.setFullScreenMode(_fullScreenMode.value);
+		}
 	}
 	function setAudioCodec(){
 		if (player1){
