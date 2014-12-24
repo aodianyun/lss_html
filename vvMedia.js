@@ -572,6 +572,18 @@ Video.prototype.getCamList = function ()/*array*/
 		return this.handle.getCamList();
 	}
 }
+
+// 设置缓冲区时间
+Video.prototype.setBuffertime = function (bufferTime /*uint*/) {
+	if (this.handle) 
+		if (typeof bufferTime == "number" || typeof bufferTime== "string") {
+			bufferTime = parseInt(bufferTime);
+		}else{
+			return;
+		}
+		return this.handle.setBuffertime(bufferTime); 
+}
+
 //设置全屏模式,initConnect()之后调用有效
 Video.prototype.setFullScreenMode = function (fullScreenMode /*uint*/) {
 	if (this.handle) 

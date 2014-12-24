@@ -175,7 +175,7 @@
                 <tr id="view_control_mediaparam">
                 	<td>
                         <form action="" method="post" style="height: 200px;">
-                        <!-- 	<label><b>视频参数</b></label><br /> -->
+                        <label><b>视频参数</b></label><br /> 
 <!--                             <label>&nbsp;&nbsp;&nbsp;&nbsp;宽：</label> -->
                             <input style="display:none;" value="320"  id="width" onchange="setCameraMode()" />
                         <!--     <label>&nbsp;&nbsp;&nbsp;&nbsp;高：</label> -->
@@ -191,18 +191,21 @@
                             <input style="display:none;" value="44100"  id="audioSamplerate" onchange="setAudioSamplerate()" />
                     		<!-- <label><b>版本号</b></label><br />
                             <label>客户端：</label -->
-                            	<input id="clientVersion" style="display:none;" disabled /> 
+                            	<input id="clientVersion" style="display:none;" disabled />
+
+                            <label>缓冲区时间：</label -->
+                              <input id="buffertime" style="width: 90px" value="2" onchange="initConnect();initConnectad()"  /> <br />
 
                             <label><b>全屏大小</b></label><br /> 
-                             <label>全屏模式：</label>
-                             <select  id="fullScreenMode"  style='width:120px' onchange="setFullScreenMode()" >
-  								 <option value="1"  >默认（保持比例）</option>
-  								 <option value="2"  >铺满屏幕</option>
-							  	<!-- <option value="3"  >原始比例</option> -->
-							  	 <option value="3"  >原始尺寸</option>  
+                             <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;模式：</label>
+                             <select  id="fullScreenMode"  style='width:95px' onchange="setFullScreenMode()" >
+  								              <option value="1"  >保持比例</option>
+  								              <option value="2"  >铺满屏幕</option>
+							  	              <!-- <option value="3"  >原始比例</option> -->
+							  	              <option value="3"  >原始尺寸</option>  						 
+						                </select>
 
-							 
-							</select>
+
                         </form>
                     </td>
                 </tr>
@@ -251,11 +254,12 @@
 	var _maxBitrate = document.getElementById("maxBitrate");
 	var _playStartTimestamp = Date.parse(new Date());
 	var _fullScreenMode =  document.getElementById("fullScreenMode");
-     var _tTimeStamp = 0;
-	var _ctimeStamp = 0;
-    var _ckey = 0;
-    var _ptimeStamp = 0;
-    var _pkey = 0;
+  var _bufferTime = document.getElementById("buffertime");
+  var _tTimeStamp = 0;
+  var _ctimeStamp = 0;
+  var _ckey = 0;
+  var _ptimeStamp = 0;
+  var _pkey = 0;
 
 	//测试接口
 	// function testDisplay()
@@ -265,14 +269,15 @@
 	// 		player1.testDisplay();		
 	// }
 	function onBodyReady(){
-		 _ckey = getQueryStr("ck");
-		 _ctimeStamp = getQueryStr("ct");
-		 _pkey = getQueryStr("pk");
+         _tTimeStamp =  getQueryStr("t");
+         _ckey = getQueryStr("ck");
+         _ctimeStamp = getQueryStr("ct");
+         _pkey = getQueryStr("pk");
          _ptimeStamp  = getQueryStr("pt");
 
-         if(_tTimeStamp && !_ctimeStamp)
-            _ctimeStamp = _tTimeStamp; 
-        
+        if(_tTimeStamp && !_ctimeStamp)
+           _ctimeStamp = _tTimeStamp;  
+
          //alert("\n_ckey: " + _ckey+"\n_ctimeStamp: " + _ctimeStamp+"\n_pkey: " + _pkey+"\n_ptimeStamp: " + _ptimeStamp); 
          if(_ckey)
             if(_ctimeStamp)
@@ -329,7 +334,7 @@
 
 	function setByteCount(){
 		var tempTotalFlow = player1.getByteCount();
-
+        
 		if (tempTotalFlow>0) 
 		{ 
 			if (tempTotalFlow >= 1048576) {
@@ -441,7 +446,7 @@
 	{
 		if (player1)
 			player1.startPlay_( _rtmpStream.value,
-							_bufferTime,
+							_bufferTime.value,
 						   0,
 						   0,
 						   0,
@@ -459,6 +464,12 @@
 		if (player1)
 			player1.stop();
 	}
+  function setBuffertime()
+  {
+    if (player1){
+      player1.setBuffertime(_bufferTime.value);
+    }
+  }
 	function setFullScreenMode()
 	{
 		if (player1){
@@ -556,7 +567,6 @@
 			player1.setCapAudioFromStereo();
 		}
 	}
-
 </script>
 </body>
 </html>
