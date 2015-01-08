@@ -72,12 +72,14 @@ function Video(id, width, height, callbackFunc, params) {
 Video.prototype.onSwfReady = function () {
 	this.handle = document.getElementById(this.uuid);
 	if (this.handle) {
+
 	}else {
 		alert("can't find swf");
 	}
 }
 // 初始化连接
 // 注：如果rtmpAddr有多个，使用英文逗号分割
+
 
 Video.prototype.initConnect = function (rtmpAddr,/*string*/
 										rtmpLive,/*string*/
@@ -118,7 +120,9 @@ Video.prototype.initConnect = function (rtmpAddr,/*string*/
 		}else{
 			return;
 		}
-		this.handle.initConnect(encodeFlashData(rtmpAddr),
+
+		this.handle.initConnect(
+								encodeFlashData(rtmpAddr),
 								encodeFlashData(rtmpLive),
 								encodeFlashData(rtmpStream),
 								encodeFlashData(rtmpArea),
@@ -252,7 +256,6 @@ Video.prototype.startPublish = function (width,/*uint*/
 	}
 }
 
-
 // 暂停上麦
 Video.prototype.pausePublish = function () {
 	if (this.handle) {
@@ -267,7 +270,7 @@ Video.prototype.stopPublish = function () {
 }
 // 播放
 Video.prototype.startPlay_ = function ( rtmpStream, /*string*/
-										bufferTime,/*uint*/
+										bufferTime,/*string*/
 									   speedupRange,/*uint reserved,set 0*/
 									   speedupTime,/*uint reserved,set 0*/
 									   speedupSpeed,/*uint reserved,set 0*/
@@ -276,11 +279,6 @@ Video.prototype.startPlay_ = function ( rtmpStream, /*string*/
 
 	if (this.handle) {
 		if (typeof isMute != "boolean"){
-			return;
-		}
-		if (typeof bufferTime == "number" || typeof bufferTime == "string") {
-			bufferTime = parseInt(bufferTime);
-		}else{
 			return;
 		}
 		if (typeof speedupRange == "number" || typeof speedupRange == "string") {
@@ -303,8 +301,17 @@ Video.prototype.startPlay_ = function ( rtmpStream, /*string*/
 		}else{
 			return;
 		}
-		//alert("String:"+String(rtmpStream));
-		this.handle.startPlay_(rtmpStream, bufferTime, speedupRange, speedupTime, speedupSpeed, volume, isMute);
+		
+	
+		this.handle.startPlay_(
+			encodeFlashData(rtmpStream), 
+			encodeFlashData(bufferTime), 
+			speedupRange, 
+			speedupTime, 
+			speedupSpeed, 
+			volume, 
+			isMute
+			);
 	}
 }
 // //测试接口
@@ -574,14 +581,13 @@ Video.prototype.getCamList = function ()/*array*/
 }
 
 // 设置缓冲区时间
-Video.prototype.setBuffertime = function (bufferTime /*uint*/) {
+Video.prototype.setBuffertime = function (bufferTime /*string*/) {
 	if (this.handle) 
-		if (typeof bufferTime == "number" || typeof bufferTime== "string") {
-			bufferTime = parseInt(bufferTime);
-		}else{
-			return;
+		if(typeof videoCodec != "string")
+		{
+			return ;
 		}
-		return this.handle.setBuffertime(bufferTime); 
+		return this.handle.setBuffertime(encodeFlashData(bufferTime)); 
 }
 
 //设置全屏模式,initConnect()之后调用有效
@@ -896,6 +902,28 @@ Video.prototype.addEventListener = function (callbackFunc) {
 		globalUUID_CallbackFuncMap[this.uuid] = callbackFunc;
 	}
 }
+
+//设置广告参数
+// Video.prototype.initArgc = function (adveType/*string*/, adveAddr/*string*/) {
+Video.prototype.initArgc = function (adveDeAddr/*string*/, adveReAddr/*string*/, width /*uint*/, height/*uint*/ ) {
+	if (this.handle) {
+		if (typeof width == "number" || typeof width == "string") {
+			width= parseInt(width);
+		}else{
+			return;
+		}
+		
+		if (typeof height == "number" || typeof height == "string") {
+			height = parseInt(height);
+		}else{
+			return;
+		}
+		return this.handle.initArgc(encodeFlashData(adveDeAddr),encodeFlashData(adveReAddr), width, height);  
+	}
+}
+
+
+
 // 回调消息
 function lssCallBack(uuid, type, info) {
 	if (globalUUID_CallbackFuncMap[uuid]){

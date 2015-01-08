@@ -103,9 +103,11 @@
                                                 case RTMP_MEDIA_READY:	//swf加载完成消息
                                                     player1.onSwfReady();
                                                     onSwfReady();
+                                                    initArgc(); 
                                                     break;
                                                 case RTMP_MEDIA_NETSTREAM_INFO:
                                                     _streamInfo.value = info;
+                                                   // initArgc();
                                                     break;
                                                 case RTMP_MEDIA_STATISTICS:
 													var obj = JSON.parse(info);
@@ -192,9 +194,8 @@
                     		<!-- <label><b>版本号</b></label><br />
                             <label>客户端：</label -->
                             	<input id="clientVersion" style="display:none;" disabled />
-
                             <label>缓冲区时间：</label -->
-                              <input id="buffertime" style="width: 90px" value="2" onchange="initConnect();initConnectad()"  /> <br />
+                              <input id="buffertime" style="width: 90px" value="2.000" onchange="initConnect();initConnectad()"  />秒 <br />
 
                             <label><b>全屏大小</b></label><br /> 
                              <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;模式：</label>
@@ -245,7 +246,7 @@
 	var _avgPing = 200;
 	var _audioChannelCount = 2;
 	var _audioBitPerSample = 16;
-	var _bufferTime = 2;
+	//var _bufferTime = 2;
 	var _videoCodec = "h264";
 	var _audioCodec = "Nellymoser";
 	var _rtmpKey = document.getElementById("rtmpKey");
@@ -257,23 +258,38 @@
   var _bufferTime = document.getElementById("buffertime");
   var _tTimeStamp = 0;
   var _ctimeStamp = 0;
-  var _ckey = 0;
   var _ptimeStamp = 0;
+  var _ckey = 0;  
   var _pkey = 0;
+  var _server = "live";
+  var _poster = "";
+  var _posterWidth = 0;
+  var _posterHeight = 0;
+  var _adveDeAddr = "";
+  var _adveReAddr = "";
+
+
 
 	//测试接口
+
 	// function testDisplay()
 	// {
 	// 	alert("hello");
 	// 	if (player1)
 	// 		player1.testDisplay();		
 	// }
-	function onBodyReady(){
+	function onBodyReady(){    
          _tTimeStamp =  getQueryStr("t");
          _ckey = getQueryStr("ck");
          _ctimeStamp = getQueryStr("ct");
          _pkey = getQueryStr("pk");
          _ptimeStamp  = getQueryStr("pt");
+         _server = getQueryStr("server");
+         _poster = getQueryStr("poster");
+         _adveDeAddr = getQueryStr("adLink");
+         _adveReAddr = getQueryStr("poster");
+         _posterWidth = getQueryStr("posterWidth");
+         _posterHeight = getQueryStr("posterHeight"); 
 
         if(_tTimeStamp && !_ctimeStamp)
            _ctimeStamp = _tTimeStamp;  
@@ -294,43 +310,40 @@
                  _rtmpStream.value = getQueryStr("stream") + "?k=" +  _pkey ;
          else
             _rtmpStream.value  = getQueryStr("stream");
-		
 		_rtmpLive.value = getQueryStr("app");
 		_rtmpKey.value = getQueryStr("key");
 	}
+
+  function initArgc()  
+  {
+    if (player1){
+      //player1.initArgc("http://www.aodianyun.com/","http://www.qqtouxiang888.com/uploads/allimg/101121/112J94056-2.jpg",320,240);
+      player1.initArgc(_adveDeAddr,_adveReAddr,_posterWidth,_posterHeight); 
+    }
+
+  }
+
+
+ // function setBuffertime()
+ //  {
+ //    if (player1){
+ //      player1.setBuffertime(_bufferTime.value*1000);
+ //    }
+ //  } 
+
 	function onSwfReady(){
 		if (player1)
 		{
-			// micList
-			// for (var i=_micList.options.length-1; i>=0; i--){
-			// 	_micList.options.remove(i);
-			// }
-			// var micListArray = player1.getMicList();
-			// for (var index in micListArray){
-			// 	var item = new Option(micListArray[index], micListArray[index]);
-			// 	_micList.options.add(item);
-			// 	_micIndexArray.push(index);
-			// }
-			// camList
-
-			// for (var i=_camList.options.length-1; i>=0; i--){
-			// 	_camList.options.remove(i);
-			// }
-			// var camListArray = player1.getCamList();
-			// for (var index in camListArray){
-			// 	var item = new Option(camListArray[index], camListArray[index]);
-			// 	_camList.options.add(item);
-			// 	_camIndexArray.push(index);
-			// }
-			//vvMediaVersion | clientVersion
-			//_clientVersion.value = player1.getClientVersion();
-			var id=window.setInterval("setByteCount()",1000); 	
-			var id1=window.setInterval("setAvgBitrate()",1000); 
-			var id2=window.setInterval("setMaxBitrate()",1000); 	
-			var id3=window.setInterval("setPlayStreamInfo()",1000); 
+			var id=window.setInterval("setRateFlow()",1000); 	
 		}
 	} 
 
+   function setRateFlow(){
+      setByteCount();
+      setAvgBitrate();
+      setMaxBitrate();
+      setPlayStreamInfo();  
+  }
 
 	function setByteCount(){
 		var tempTotalFlow = player1.getByteCount();
@@ -372,6 +385,7 @@
 		_streamInfo.value  = _playStreamInfoStr;
 
 	} 
+
 	function initConnect(){
 		if (player1)
 			player1.initConnect( _rtmpAddr.value,
@@ -385,9 +399,9 @@
 							_isHD,
 							_session,
 							_isUDP,
-							_rtmpKey.value);
+							_rtmpKey.value
+             );
 	}
-
 
 	function initConnectad()
 	{
@@ -401,6 +415,7 @@
 		if (player1)
 			player1.closeConnect();
 	}
+
 	function startPublish()
 	{
 		if (player1) {
@@ -445,13 +460,15 @@
 	function startPlay_()
 	{
 		if (player1)
-			player1.startPlay_( _rtmpStream.value,
+			player1.startPlay_( 
+              _rtmpStream.value,
 							_bufferTime.value,
 						   0,
 						   0,
 						   0,
 						   _volume.value,
-						   _isMute.checked);
+						   _isMute.checked  
+               );
 		_playStartTimestamp = Date.parse(new Date()); 
 	}
 	function pause()
@@ -467,7 +484,7 @@
   function setBuffertime()
   {
     if (player1){
-      player1.setBuffertime(_bufferTime.value);
+      player1.setBuffertime(_bufferTime.value*1000);
     }
   }
 	function setFullScreenMode()
