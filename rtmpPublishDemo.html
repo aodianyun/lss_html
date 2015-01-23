@@ -321,12 +321,17 @@
 				_camList.options.add(item);
 				_camIndexArray.push(index);
 			}
-			var id=window.setInterval("setPublishByteCount()",1000); 	
-			var id1=window.setInterval("setPublishAvgBitrate()",1000); 
-			var id2=window.setInterval("setPublishMaxBitrate()",1000); 
-			var id3=window.setInterval("setPublishStreamInfo()",1000); 
+			var id=window.setInterval("setRateFlow()",1000); 	
 		}
 	}
+
+    function setRateFlow(){
+        setPublishByteCount();
+        setPublishAvgBitrate();
+        setPublishMaxBitrate();
+        setPublishStreamInfo();
+    }
+
 	function setPublishByteCount(){
 		var tempTotalFlow = player1.getPublishByteCount();
 		if (tempTotalFlow>0) 
@@ -341,15 +346,13 @@
 	function setPublishAvgBitrate(){
 		var tempTotalFlow = player1.getPublishByteCount();
 		var publishTimestamp = Date.parse(new Date());
-		_avgBitrate.value = ((tempTotalFlow*8)/(publishTimestamp - _publishStartTimestamp)).toFixed(2) + "kb" ;
+		_avgBitrate.value = ((tempTotalFlow)/(publishTimestamp - _publishStartTimestamp)).toFixed(2) + "kb" ;
 	}
 	function setPublishMaxBitrate(){
 		var tempTotalFlow = player1.getPublishMaxBitrate();
-		_maxBitrate.value = (tempTotalFlow/1000) .toFixed(2) + "kb";	
+		_maxBitrate.value = (tempTotalFlow/1024) .toFixed(2) + "kb";	
 	}
 	function setPublishStreamInfo(){
-	//	_streamInfo.value =  player1.getPublishStreamInfo();	
-
 		var _publishStreamInfoStr = "当前帧率:	" + player1.getCurrentFPS().toFixed(2) +"\n" +
 										"音频码率:	" + player1.getAudioBytesPerSecond().toFixed(2) + "(kbps)\n" +
 										"视频码率:	" + player1.getVideoBytesPerSecond().toFixed(2)  + "(kbps)\n" + 
@@ -368,7 +371,6 @@
 										"音频设备:	" + player1.getMicName() +"\n"+ 
 										"视频设备:	" + player1.getCameraName() ;
 		_streamInfo.value  = _publishStreamInfoStr;  
-
 	} 
 	function initConnect(){
 		if (player1)

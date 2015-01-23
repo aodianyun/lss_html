@@ -45,7 +45,7 @@
                     <label>累计流量：</label><input id="totalFlow" style="width: 95px" type="text" value="0.00MB" disabled />
                     <label>平均码率：</label><input id="avgBitrate" style="width: 95px" type="text" value="0.00kb" disabled />
                     <label>峰值码率：</label><input id="maxBitrate" style="width: 95px" type="text" value="0.00kb" disabled />
-                </form>
+                </form>     
              </td>
         </tr>
         <tr id="view" valign="top">
@@ -261,14 +261,16 @@
   var _ptimeStamp = 0;
   var _ckey = 0;  
   var _pkey = 0;
-  var _server = "live";
-  var _poster = "";
+  var _server = "";
+  //var _poster = "";
   var _posterWidth = 0;
   var _posterHeight = 0;
   var _adveDeAddr = "";
   var _adveReAddr = "";
-
-
+  var _controlbardisplay= "enable"; 
+  var _logo = "";
+  var _logoposition = "left";
+  var _logoAlpha = 800; 
 
 	//测试接口
 
@@ -285,11 +287,15 @@
          _pkey = getQueryStr("pk");
          _ptimeStamp  = getQueryStr("pt");
          _server = getQueryStr("server");
-         _poster = getQueryStr("poster");
+         //_poster = getQueryStr("poster");
          _adveDeAddr = getQueryStr("adLink");
          _adveReAddr = getQueryStr("poster");
-         _posterWidth = getQueryStr("posterWidth");
-         _posterHeight = getQueryStr("posterHeight"); 
+         _posterWidth = getQueryStr("posterwidth");
+         _posterHeight = getQueryStr("posterheight"); 
+         _controlbardisplay = getQueryStr("bar"); 
+         _logo = getQueryStr("logo"); 
+         _logoposition = getQueryStr("logoposition"); 
+         _logoAlpha = getQueryStr("logoAlpha"); 
 
         if(_tTimeStamp && !_ctimeStamp)
            _ctimeStamp = _tTimeStamp;  
@@ -318,11 +324,19 @@
   {
     if (player1){
       //player1.initArgc("http://www.aodianyun.com/","http://www.qqtouxiang888.com/uploads/allimg/101121/112J94056-2.jpg",320,240);
-      player1.initArgc(_adveDeAddr,_adveReAddr,_posterWidth,_posterHeight); 
+      player1.initArgc(
+        _adveDeAddr,
+        _adveReAddr,
+        _posterWidth,
+        _posterHeight,
+        _controlbardisplay,
+        _logo,
+        _logoposition,
+        _server,
+        _logoAlpha
+        ); 
     }
-
   }
-
 
  // function setBuffertime()
  //  {
@@ -351,20 +365,20 @@
 		if (tempTotalFlow>0) 
 		{ 
 			if (tempTotalFlow >= 1048576) {
-				_totalFlow.value = (tempTotalFlow / 1048576).toFixed(2) + "MB";
+				_totalFlow.value = ((tempTotalFlow /8)/ 1048576).toFixed(2) + "MB";
 			} else {
-				_totalFlow.value = (tempTotalFlow / 1024).toFixed(2) + "KB";
+				_totalFlow.value = ((tempTotalFlow/8) / 1024).toFixed(2) + "KB";
 			}
 		}								
 	} 
 	function setAvgBitrate(){
 		var playTimestamp = Date.parse(new Date());
 		var tempTotalFlow = player1.getByteCount();
-		_avgBitrate.value = ((tempTotalFlow*8)/(playTimestamp - _playStartTimestamp)).toFixed(2) + "kb" ;
+		_avgBitrate.value = ((tempTotalFlow)/(playTimestamp - _playStartTimestamp)).toFixed(2) + "kb" ; 
 	}
 	function setMaxBitrate(){
-		var tempTotalFlow = player1.getMaxBitrate();
-		_maxBitrate.value = (tempTotalFlow/1000) .toFixed(2) + "kb";	
+		var tempTotalFlow = player1.getMaxBitrate();  
+		_maxBitrate.value = (tempTotalFlow/1024) .toFixed(2) + "kb";	
 	}	
 	function setPlayStreamInfo(){
 		//_streamInfo.value =  player1.getPlayStreamInfo();	
