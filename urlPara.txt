@@ -1,0 +1,81 @@
+### server
+ * 说明：表示当前是点播（vod）还是直播(live)
+ * 类型：string 
+ * 取值："vod" 和 "live"，分别对应点播和直播。 默认为 "live"
+ * 对应：通用
+
+### addr 
+ * 说明：点播时视频地址或直播时流地址
+ * 类型：string
+ * 取值：链接，如 "lssplay.aodianyun.com/fubohua"。多个之间用","隔开，默认为空
+ * 对应：通用
+
+### stream 
+ * 说明：视频流，直播时有用。
+ * 类型：string
+ * 取值：链接，如 "lssplay.aodianyun.com/fubohua"。多个之间用","隔开，默认为空
+ * 对应：通用
+
+### adLink  
+ * 说明：点击广告图片后的跳转链接地址
+ * 类型：string
+ * 取值：网址链接，如 "www.aodianyun.com"。默认为空
+ * 对应：通用
+
+### poster 
+ * 说明：所要加载的广告图片的地址，默认大小为320*240 。其他大小必须传递 posterWidth和posterHeight
+ * 类型：string
+ * 取值：如 "http://www.baidu.com/img/bd_logo1.png"。默认为空
+ * 对应：通用
+
+### posterWidth
+ * 说明：所传递的广告图片的宽
+ * 类型：uint
+ * 取值：，如 320。默认为 320
+ * 对应：通用
+
+### posterHeight
+ * 说明：所传递的广告图片的高
+ * 类型：uint
+ * 取值：如 240。默认为 240
+ * 对应：通用
+
+### bar
+ * 说明：是否进度条显示
+ * 类型：string
+ * 取值："enable" 和 "disable"。 默认为disable 
+ * 对应：通用
+
+### logo
+ * 说明：显示logo的图片链接。logo传递进去后大小不可以改变。
+ * 类型：string
+ * 取值：网址链接，如 "logo=http://www.aodianyun.com/site/images/logo.png"。 默认为空，表示不显示logo 
+ * 对应：通用
+
+### logoposition
+ * 说明：显示logo的位置。通过控制logo图片的左上角位置实现。
+ * 类型：string
+ * 取值："left"和"right",可为空，默认为 "left"。 左边是logo右上角的位置是（5%，5%），右边时为（75%，5%）
+ * 对应：通用右边时
+
+### logoAlpha
+ * 说明：logo的透明度；
+ * 类型：uint
+ * 取值：0 ~ 1000。0表示完全透明，1000表示完全不透明。默认为 1000， 完全不透明。 
+ * 对应：通用
+
+
+示例：
+1.多路直播流切换
+http://demo.aodianyun.com/lss/demo/rtmpPlayDemo.html?addr=rtmp://lssplay.aodianyun.com/demo&stream=game,stock,monitor&bar=enable
+
+2.点播时多路画质切换
+http://demo.aodianyun.com/lss/demo/rtmpPlayDemo.html?addr=http://192.168.1.13/videoDemo/visitor176.flv,http://192.168.1.13/videoDemo/visitor320.flv,http://192.168.1.13/videoDemo/visitor640.flv&bar=enable&server=vod
+
+3.logo支持
+http://demo.aodianyun.com/lss/demo/rtmpPlayDemo.html?addr=rtmp://lssplay.aodianyun.com/demo&logoAlpha=600&stream=variety,game,stock&bar=enable&logo=http://demo.aodianyun.com/act/images/logo.gif
+
+4.广告支持
+http://demo.aodianyun.com/lss/demo/rtmpPlayDemo.html?
+server=vod&bar=enable&addr=http://192.168.1.13/videoDemo/visitor640.flv&adLink=http://www.chery.cn/&%20poster=http://pic.baike.soso.com/p/20110209/20110209210258-1763415932.jpg&posterWidth=320&posterHeight=240
+
