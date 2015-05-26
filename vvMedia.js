@@ -905,43 +905,20 @@ Video.prototype.addEventListener = function (callbackFunc) {
 
 //设置广告参数
 // Video.prototype.initArgc = function (adveType/*string*/, adveAddr/*string*/) {
-Video.prototype.initArgc = function (adveDeAddr/*string*/, 
-									adveReAddr/*string*/, 
-									width /*uint*/, 
-									height/*uint*/,
-									controlbardisplay,/*string*/ 
-									logo,/*string*/
-									logoposition,/*string*/ 
-									server,/*string*/
-									logoAlpha/*uint*/) { 
+Video.prototype.initArgc = function (adveDeAddr/*string*/, adveReAddr/*string*/, width /*uint*/, height/*uint*/ ) {
 	if (this.handle) {
 		if (typeof width == "number" || typeof width == "string") {
 			width= parseInt(width);
 		}else{
 			return;
 		}
-
+		
 		if (typeof height == "number" || typeof height == "string") {
 			height = parseInt(height);
 		}else{
-			return; 
+			return;
 		}
-
-		if (typeof logoAlpha == "number" || typeof logoAlpha == "string") {
-			logoAlpha = parseInt(logoAlpha); 
-		}else{
-			return; 
-		}
-		return this.handle.initArgc(encodeFlashData(adveDeAddr),
-									encodeFlashData(adveReAddr), 
-									width, 
-									height,
-									encodeFlashData(controlbardisplay),
-									encodeFlashData(logo),
-									encodeFlashData(logoposition),
-									encodeFlashData(server),
-									logoAlpha
-									);  
+		return this.handle.initArgc(encodeFlashData(adveDeAddr),encodeFlashData(adveReAddr), width, height);  
 	}
 }
 
