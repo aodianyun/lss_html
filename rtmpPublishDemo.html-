@@ -3,22 +3,23 @@
 
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-<title>rtmp play demo</title>
-<!-- 	<link rel="stylesheet" type="text/css" href="history/history.css" />
-	<script type="text/javascript" src="history/history.js"></script> -->
+<title>rtmp publish demo</title>
+	<!-- <link rel="stylesheet" type="text/css" href="history/history.css" /> 
+	 <script type="text/javascript" src="history/history.js"></script>-->
 	<script type="text/javascript" src="swfobject.js"></script>
 	<link rel="stylesheet" type="text/css" href="rtmpMedia.css" />
 	<script type="text/javascript" src="vvMedia.js"></script>
 	<script type="text/javascript">
 	var LocString = String(window.document.location.href);
-
 	function getQueryStr(str) {
 		var rs = new RegExp("(^|)" + str + "=([^&]*)(&|$)", "gi").exec(LocString), tmp;
 		if (tmp = rs) {
 			return tmp[2];
 		}      
 		return "";
-	}	
+
+
+	}
 	</script>
 </head>
 
@@ -29,11 +30,11 @@
         	<td id="url" colspan="2">
                 <form action="" method="post" style="height: 30px">
                     <label>服务器：</label><input id="rtmpAddr" style="width: 370px" type="text" value="rtmp.aodianyun.com:1936" disabled />
-                    <text id="rtmpLive" visible ="false" style="width: 95px" type="text" value="app" />
-                    <input id="rtmpKey" style="display:none;" type="text" value="123456"/>
+                    <input id="rtmpLive" style="display:none;" type="text" value="app" />
+                    <input id="rtmpKey" style="display:none;" type="text" value="123456" /> 
                     <label>Stream(选填)：</label><input id="rtmpStream" style="width: 125px; background-color:#EEE" type="text" value="999999" />
-                    <text id="userID" style="display:none;"  value="10001" />
-                     <input id="timeStamp" style="display:none;" type="text" value="14321"/>
+                  <input id="userID"  style="display:none;" type="text" value="10001" />
+                   <input id="timeStamp" style="display:none;" type="text" value="14321"/>
                       <input id="ckey" style="display:none;" type="text" value="23345"/>
                        <input id="pkey" style="display:none;" type="text" value="9876"/>
                 </form>
@@ -45,7 +46,7 @@
                     <label>累计流量：</label><input id="totalFlow" style="width: 95px" type="text" value="0.00MB" disabled />
                     <label>平均码率：</label><input id="avgBitrate" style="width: 95px" type="text" value="0.00kb" disabled />
                     <label>峰值码率：</label><input id="maxBitrate" style="width: 95px" type="text" value="0.00kb" disabled />
-                </form>     
+                </form>
              </td>
         </tr>
         <tr id="view" valign="top">
@@ -77,7 +78,7 @@
                                                     case "new connect":
                                                         break;
 													case SCHEDULE_FINISH:
-														startPlay_();
+														startPublish();
 														break;
 													case RTMP_PEPFLASH:
 														alert("警告：\n\n系统检测到您正在使用 Pepper Flash Player，\n\n此版本的 Flash 并不完善，请尝试更换IE浏览器，\n\n或百度“如何禁用Pepper Flash”。");
@@ -103,11 +104,9 @@
                                                 case RTMP_MEDIA_READY:	//swf加载完成消息
                                                     player1.onSwfReady();
                                                     onSwfReady();
-                                                    initArgc(); 
                                                     break;
                                                 case RTMP_MEDIA_NETSTREAM_INFO:
                                                     _streamInfo.value = info;
-                                                   // initArgc();
                                                     break;
                                                 case RTMP_MEDIA_STATISTICS:
 													var obj = JSON.parse(info);
@@ -137,10 +136,12 @@
                             11.1.0 or greater is installed. 
                         </p>
                         <script type="text/javascript">
-                            document.write("<a href='http://www.adobe.com/go/getflashplayer'><img alt='Get Adobe Flash player' /></a>" ); 
+                            var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
+                            // document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
+                            //                 + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
                         </script>
                     </div>
-                    </td>
+                    </td> 
                     </tr>
                     <tr id="view_display_info">
                         <td>
@@ -156,10 +157,16 @@
             	<table align="left" >
             	<tr id="view_control_device">
                 	<td>
-			<form action="" method="post" style="height: 205px; " >
-				  <label>&nbsp;&nbsp;&nbsp;&nbsp;</label><input style="display:none;" value="麦克风" onclick="setCapAudioFromMic()" />
-				  <input id="stereoButton"  style="display:none;" value="混音" onclick="setCapAudioFromStereo()" /><br /><br />		  
-                  <label><b>音量设置</b></label><br />   
+			<form action="" method="post" style="height: 205px; ">
+            	<label><b>输入设备</b></label><br />
+				  <label>&nbsp;&nbsp;摄像头：</label>
+				  <select style="width: 150px" id="camList" onchange="setCam()"></select><br />
+				  <label>&nbsp;&nbsp;麦克风：</label>
+				  <select style="width: 150px" id="micList" onchange="setMic()"></select><br /><br />
+                  <label><b>混音选择</b></label><br />
+				  <label>&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="button" style="width:55px" value="麦克风" onclick="setVideoDisplaySize()" />
+				  <input id="stereoButton" type="button"  style="width:55px" value="混音" onclick="setCapAudioFromStereo()" /><br /><br />
+                  <label><b>音量设置</b></label><br />
 				  <label>&nbsp;&nbsp;&nbsp;&nbsp;音量：</label><input style="width: 30px" type="text" id="volume" onchange="setVolume()" value="80" />(0~100)
 				  <input id="isMute" type="checkbox" onchange="setMute()" /><label>静音</label>
 			</form>
@@ -167,47 +174,39 @@
                 </tr>
                 <tr id="view_control_onoff">
                 	<td>
-			<form action="" method="post" style="height: 160px;">
-				<input style="width: 90px; height:90px" type="button" value="播放" id="playBtn" onclick="initConnect();initConnectad()" />
-				<input style="width: 90px; height:90px" type="button" value="停止" id="stopBtn" onclick="closeConnect()" />			
+			<form action="" method="post" style="height: 120px;">
+				<input style="width: 90px; height:90px" type="button" value="上麦" id="publishBtn" onclick="initConnect()" />
+				<input style="width: 90px; height:90px" type="button" value="停止" id="stopBtn" onclick="closeConnect()" />
 			</form>
                     </td>
                 </tr>
-
                 <tr id="view_control_mediaparam">
                 	<td>
                         <form action="" method="post" style="height: 200px;">
-                        <label><b>视频参数</b></label><br /> 
-<!--                             <label>&nbsp;&nbsp;&nbsp;&nbsp;宽：</label> -->
-                            <input style="display:none;" value="320"  id="width" onchange="setCameraMode()" />
-                        <!--     <label>&nbsp;&nbsp;&nbsp;&nbsp;高：</label> -->
-                            <input style="display:none;"  value="240"  id="height" onchange="setCameraMode()" />
-                          <!--   <label>&nbsp;&nbsp;帧率：</label> -->
-                            <input style="display:none;" value="10"  id="videoFPS" onchange="setCameraMode()" />
-                         <!--    <label>&nbsp;&nbsp;码率：</label> -->
-                            <input style="display:none;" value="256"  id="videoKBitrate" onchange="setCameraQuality()" />
-                          <!--   <label><b>音频参数</b></label><br /> -->
-                          <!--   <label>&nbsp;&nbsp;码率：</label> -->
-                            <input style="display:none;"  value="44" id="audioKBitrate" onchange="setAudioBitrate()" />
-                          <!--   <label>采样率：</label> -->
-                            <input style="display:none;" value="44100"  id="audioSamplerate" onchange="setAudioSamplerate()" />
-                    		<!-- <label><b>版本号</b></label><br />
-                            <label>客户端：</label -->
-                            	<input id="clientVersion" style="display:none;" disabled />
-                            <label>缓冲区时间：</label -->
-                              <input id="buffertime" style="width: 90px" value="2.000" onchange="initConnect();initConnectad()"  />秒 <br />
+                        	<label><b>视频参数</b></label><br />
+                            <label>&nbsp;&nbsp;&nbsp;&nbsp;宽：</label><input style="width: 90px" type="text" value="320" id="width" onchange="setCameraMode()" />(1~640)<br />
+                            <label>&nbsp;&nbsp;&nbsp;&nbsp;高：</label><input style="width: 90px" type="text" value="240" id="height" onchange="setCameraMode()" />(1~480)<br />
+                            <label>&nbsp;&nbsp;帧率：</label><input type="text"  style="width: 90px" value="30" id="videoFPS" onchange="setCameraMode()" />(1~60)<br />
+                            <label>&nbsp;&nbsp;码率：</label><input style="width: 90px" type="text" value="512" id="videoKBitrate" onchange="setCameraQuality()" />(32~2048)(kbps)<br />
+                            <label>关键帧：</label><input style="width: 90px" type="text" value="30" id="keyFrameInterval" onchange="setKeyFrameInterval()" />(1~180)<br />
+                            <br />
 
+
+                            <label><b>音频参数</b></label><br />
+                            <label>&nbsp;&nbsp;码率：</label><input style="width: 90px" type="text" value="44" id="audioKBitrate" onchange="setAudioBitrate()" />(16~48)(kbps)<br />
+                            <label>采样率：</label><input style="width: 90px" type="text" value="44100" id="audioSamplerate" onchange="setAudioSamplerate()" />(16000~48000)(Hz)<br /><br />
+                    		<!-- <label><b>版本号</b></label><br /> -->
+                            <!--   <label>客户端：</label> --><input id="clientVersion" style="display:none;" type="text" disabled />
                             <label><b>全屏大小</b></label><br /> 
-                             <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;模式：</label>
+                             <label>&nbsp;&nbsp;模式：</label>
                              <select  id="fullScreenMode"  style='width:95px' onchange="setFullScreenMode()" >
-  								              <option value="1"  >保持比例</option>
-  								              <option value="2"  >铺满屏幕</option>
-							  	              <!-- <option value="3"  >原始比例</option> -->
-							  	              <option value="3"  >原始尺寸</option>  						 
-						                </select>
+  								 <option value="1"  >保持比例</option>
+  								 <option value="2"  >铺满屏幕</option>
+							  	 <!--<option value="3"  >原始比例</option>  -->
+							  	 <option value="3"  >原始尺寸</option> 							 
+							</select>
 
-
-                        </form>
+                      </form>
                     </td>
                 </tr>
                 </table>
@@ -221,6 +220,8 @@
 	var _micIndexArray = [];
 	var _mediaInfo = document.getElementById("mediaInfo");
 	var _streamInfo = document.getElementById("streamInfo");
+	var _micList = document.getElementById("micList");
+	var _camList = document.getElementById("camList");
 	var _isUseCam = true;
 	var _isUseMic = true;
 	var _isHD = false;
@@ -232,7 +233,7 @@
 	var _schedulingPing = 1500;
 	var _limitCheckPing = 1000;
 	var _checkPingTimer = 1000;
-	var _userID = "10001";
+	var _userID = document.getElementById("userID");
 	var _session = "123";
 	var _width = document.getElementById("width");
 	var _height = document.getElementById("height");
@@ -246,61 +247,38 @@
 	var _avgPing = 200;
 	var _audioChannelCount = 2;
 	var _audioBitPerSample = 16;
-	//var _bufferTime = 2;
+	var _bufferTime = 2;
 	var _videoCodec = "h264";
 	var _audioCodec = "Nellymoser";
 	var _rtmpKey = document.getElementById("rtmpKey");
 	var _totalFlow = document.getElementById("totalFlow");
 	var _avgBitrate = document.getElementById("avgBitrate");
 	var _maxBitrate = document.getElementById("maxBitrate");
-	var _playStartTimestamp = Date.parse(new Date());
+	var _publishStartTimestamp = Date.parse(new Date());
 	var _fullScreenMode =  document.getElementById("fullScreenMode");
-  var _bufferTime = document.getElementById("buffertime");
-  var _tTimeStamp = 0;
-  var _ctimeStamp = 0;
-  var _ptimeStamp = 0;
-  var _ckey = 0;  
-  var _pkey = 0;
-  var _server = "";
-  //var _poster = "";
-  var _posterWidth = 0;
-  var _posterHeight = 0;
-  var _adveDeAddr = "";
-  var _adveReAddr = "";
-  var _controlbardisplay= "enable"; 
-  var _logo = "";
-  var _logoposition = "left";
-  var _logoAlpha = 800; 
+	var _keyFrameInterval =  document.getElementById("keyFrameInterval");
+    var _tTimeStamp = 0;
+    var _ctimeStamp = 0;
+    var _ckey = 0;
+    var _ptimeStamp = 0;
+    var _pkey = 0;
 
-	//测试接口
+	
+	function onBodyReady(){
+		// _rtmpAddr.value = getQueryStr("addr");
+		// _rtmpLive.value = getQueryStr("app");
+		// _rtmpStream.value = getQueryStr("stream");
+		// _rtmpKey.value = getQueryStr("key");
 
-	// function testDisplay()
-	// {
-	// 	alert("hello");
-	// 	if (player1)
-	// 		player1.testDisplay();		
-	// }
-	function onBodyReady(){    
-         _tTimeStamp =  getQueryStr("t");
-         _ckey = getQueryStr("ck");
-         _ctimeStamp = getQueryStr("ct");
-         _pkey = getQueryStr("pk");
+        _tTimeStamp =  getQueryStr("t");
+		 _ckey = getQueryStr("ck");
+		 _ctimeStamp = getQueryStr("ct");
+		 _pkey = getQueryStr("pk");
          _ptimeStamp  = getQueryStr("pt");
-         _server = getQueryStr("server");
-         //_poster = getQueryStr("poster");
-         _adveDeAddr = getQueryStr("adLink");
-         _adveReAddr = getQueryStr("poster");
-         _posterWidth = getQueryStr("posterwidth");
-         _posterHeight = getQueryStr("posterheight"); 
-         _controlbardisplay = getQueryStr("bar"); 
-         _logo = getQueryStr("logo"); 
-         _logoposition = getQueryStr("logoposition"); 
-         _logoAlpha = getQueryStr("logoAlpha"); 
-
+        
         if(_tTimeStamp && !_ctimeStamp)
-           _ctimeStamp = _tTimeStamp;  
+            _ctimeStamp = _tTimeStamp; 
 
-         //alert("\n_ckey: " + _ckey+"\n_ctimeStamp: " + _ctimeStamp+"\n_pkey: " + _pkey+"\n_ptimeStamp: " + _ptimeStamp); 
          if(_ckey)
             if(_ctimeStamp)
                 _rtmpAddr.value = getQueryStr("addr")+ "?k=" +  _ckey+ "&t=" + _ctimeStamp;
@@ -316,90 +294,84 @@
                  _rtmpStream.value = getQueryStr("stream") + "?k=" +  _pkey ;
          else
             _rtmpStream.value  = getQueryStr("stream");
+
 		_rtmpLive.value = getQueryStr("app");
 		_rtmpKey.value = getQueryStr("key");
 	}
-
-  function initArgc()  
-  {
-    if (player1){
-      //player1.initArgc("http://www.aodianyun.com/","http://www.qqtouxiang888.com/uploads/allimg/101121/112J94056-2.jpg",320,240);
-      player1.initArgc(
-        _adveDeAddr,
-        _adveReAddr,
-        _posterWidth,
-        _posterHeight,
-        _controlbardisplay,
-        _logo,
-        _logoposition,
-        _server,
-        _logoAlpha
-        ); 
-    }
-  }
-
- // function setBuffertime()
- //  {
- //    if (player1){
- //      player1.setBuffertime(_bufferTime.value*1000);
- //    }
- //  } 
-
 	function onSwfReady(){
 		if (player1)
 		{
+			// micList
+			for (var i=_micList.options.length-1; i>=0; i--){
+				_micList.options.remove(i);
+			}
+			var micListArray = player1.getMicList();
+			for (var index in micListArray){
+				var item = new Option(micListArray[index], micListArray[index]);
+				_micList.options.add(item);
+				_micIndexArray.push(index);
+			}
+			// camList
+			for (var i=_camList.options.length-1; i>=0; i--){
+				_camList.options.remove(i);
+			}
+			var camListArray = player1.getCamList();
+			for (var index in camListArray){
+				var item = new Option(camListArray[index], camListArray[index]);
+				_camList.options.add(item);
+				_camIndexArray.push(index);
+			}
 			var id=window.setInterval("setRateFlow()",1000); 	
 		}
-	} 
+	}
 
-   function setRateFlow(){
-      setByteCount();
-      setAvgBitrate();
-      setMaxBitrate();
-      setPlayStreamInfo();  
-  }
+    function setRateFlow(){
+        setPublishByteCount();
+        setPublishAvgBitrate();
+        setPublishMaxBitrate();
+        setPublishStreamInfo();
+    }
 
-	function setByteCount(){
-		var tempTotalFlow = player1.getByteCount();
-        
+	function setPublishByteCount(){
+		var tempTotalFlow = player1.getPublishByteCount();
 		if (tempTotalFlow>0) 
 		{ 
 			if (tempTotalFlow >= 1048576) {
-				_totalFlow.value = ((tempTotalFlow /8)/ 1048576).toFixed(2) + "MB";
+				_totalFlow.value = (tempTotalFlow / 1048576).toFixed(2) + "MB";
 			} else {
-				_totalFlow.value = ((tempTotalFlow/8) / 1024).toFixed(2) + "KB";
-			}
+				_totalFlow.value = (tempTotalFlow / 1024).toFixed(2) + "KB";
+			}			
 		}								
 	} 
-	function setAvgBitrate(){
-		var playTimestamp = Date.parse(new Date());
-		var tempTotalFlow = player1.getByteCount();
-		_avgBitrate.value = ((tempTotalFlow)/(playTimestamp - _playStartTimestamp)).toFixed(2) + "kb" ; 
+	function setPublishAvgBitrate(){
+		var tempTotalFlow = player1.getPublishByteCount();
+		var publishTimestamp = Date.parse(new Date());
+		_avgBitrate.value = ((tempTotalFlow)/(publishTimestamp - _publishStartTimestamp)).toFixed(2) + "kb" ;
 	}
-	function setMaxBitrate(){
-		var tempTotalFlow = player1.getMaxBitrate();  
+	function setPublishMaxBitrate(){
+		var tempTotalFlow = player1.getPublishMaxBitrate();
 		_maxBitrate.value = (tempTotalFlow/1024) .toFixed(2) + "kb";	
-	}	
-	function setPlayStreamInfo(){
-		//_streamInfo.value =  player1.getPlayStreamInfo();	
-		//_streamInfo.value = player1.getCurrentFPS();
-		var _playStreamInfoStr = "当前帧率:	" + player1.getCurrentFPS().toFixed(2) +"\n" +
+	}
+	function setPublishStreamInfo(){
+		var _publishStreamInfoStr = "当前帧率:	" + player1.getCurrentFPS().toFixed(2) +"\n" +
 										"音频码率:	" + player1.getAudioBytesPerSecond().toFixed(2) + "(kbps)\n" +
 										"视频码率:	" + player1.getVideoBytesPerSecond().toFixed(2)  + "(kbps)\n" + 
-										"当前码率:	" + player1 .getCurrentBytesPerSecond().toFixed(2) + "(kbps)\n"+ 
-										//"关键帧间隔:     " + player1.getKeyFrameInterval() +   "\n" +
-										"接受字节数:	" + player1.getCurrentByteCount() + "(byte)\n"+
-										"缓冲区时间:	" + player1.getBufferLength() +"(s)\n"+
-										"音频缓冲区时间:	" + player1.getAudioBufferLength() + "(s)\n"+
-										"视频缓冲区时间:	" + player1.getVideoBufferLength() + "(s)\n"+
+										"当前码率:	" + player1.getCurrentBytesPerSecond().toFixed(2) + "(kbps)\n"+ 
+										"关键帧间隔:     "+  player1.getKeyFrameInterval() +   "\n" +
+										"发送字节数:	" + player1.getCurrentByteCount() + "(byte)\n"+
+										// "缓冲区时间:	" + player1.getBufferLength() +"(s)\n"+
+										// "音频缓冲区时间:	" + player1.getAudioBufferLength() + "(s)\n"+
+										// "视频缓冲区时间:	" + player1.getVideoBufferLength() + "(s)\n"+
 										"音频编码:	" + player1.getAudioCodec() +"\n"+ 
 										"视频编码:	" + player1.getVideoCodec() +"\n"+ 
-										"原始视频宽度:	" + player1.getVideoWidth().toString()+ "\n"+
-										"原始视频高度:	"+ player1.getVideoHeight().toString()+ "\n";
-		_streamInfo.value  = _playStreamInfoStr;
-
+										// "原始视频宽度:	" + player1.getVideoWidth().toString()+ "\n"+
+										// "原始视频高度:	"+ player1.getVideoHeight().toString()+ "\n"+
+										 "原始视频宽度:	" + player1.getPublishVideoWidth()+ "\n"+
+										 "原始视频高度:	"+ player1.getPublishVideoHeight()+ "\n"+
+										"音频设备:	" + player1.getMicName() +"\n"+ 
+										"视频设备:	" + player1.getCameraName() ;
+		_streamInfo.value  = _publishStreamInfoStr;  
 	} 
-
 	function initConnect(){
 		if (player1)
 			player1.initConnect( _rtmpAddr.value,
@@ -409,29 +381,20 @@
 							_schedulingPing,
 							_limitCheckPing,
 							_checkPingTimer,
-							_userID,
+							_userID.value,
 							_isHD,
 							_session,
 							_isUDP,
-							_rtmpKey.value
-             );
+							_rtmpKey.value);
 	}
-
-	function initConnectad()
-	{
-		if (player1)
-			player1.initConnectad();
-		//alert("heiho");
-	}
-
 	function closeConnect()
 	{
 		if (player1)
 			player1.closeConnect();
 	}
-
 	function startPublish()
 	{
+		_publishStartTimestamp = Date.parse(new Date());
 		if (player1) {
 			var micID = -1;
 			for(var i=0; i<_micIndexArray.length; i++)
@@ -460,7 +423,7 @@
 							 _audioKBitrate.value,
 							 _audioSamplerate.value,
 							 _videoFPS.value,
-							 _videoFPS.value * 3,
+							 _keyFrameInterval.value, 
 							 _videoKBitrate.value,
 							 _videoQuality,
 							 _volume.value,
@@ -470,20 +433,18 @@
 							 _isUDP,
 							 _isMute.checked);
 		}
+
 	}
-	function startPlay_()
+	function startPlay()
 	{
 		if (player1)
-			player1.startPlay_( 
-              _rtmpStream.value,
-							_bufferTime.value,
+			player1.startPlay( _rtmpStream.value,
+							_bufferTime,
 						   0,
 						   0,
 						   0,
 						   _volume.value,
-						   _isMute.checked  
-               );
-		_playStartTimestamp = Date.parse(new Date()); 
+						   _isMute.checked);
 	}
 	function pause()
 	{
@@ -495,12 +456,6 @@
 		if (player1)
 			player1.stop();
 	}
-  function setBuffertime()
-  {
-    if (player1){
-      player1.setBuffertime(_bufferTime.value*1000);
-    }
-  }
 	function setFullScreenMode()
 	{
 		if (player1){
@@ -532,7 +487,6 @@
 			player1.setAudioCodec(micID);
 		}
 	}
-
 	function setCam()
 	{
 		if (player1){
@@ -558,6 +512,11 @@
 			player1.setIsUseMic(_isUseMic);
 		}
 	}
+	function setVideoDisplaySize() {
+		if (player1) {
+			player1.setVideoDisplaySize(width*3, height*3);
+		}
+	}
 	function setCameraMode(){
 		if(player1){
 			player1.setCameraMode(_width.value, _height.value, _videoFPS.value);
@@ -566,6 +525,11 @@
 	function setCameraQuality(){
 		if(player1){
 			player1.setCameraQuality(_videoKBitrate.value, _videoQuality);
+		}
+	}
+	function setKeyFrameInterval(){
+		if(player1){
+			player1.setKeyFrameInterval(_keyFrameInterval.value);
 		}
 	}
 	function setAudioBitrate(){

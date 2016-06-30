@@ -36,8 +36,7 @@ var MEDIA_DEVICE_INFO = "Media.Device.Info";
 var RTMP_PEPFLASH = "Rtmp.PepFlash";
 
 var UUID_BASE = 0;
-//var THIS_SWF_NAME = "vvMedia.swf";
-var THIS_SWF_NAME = "TestVideoAudio.swf";
+var THIS_SWF_NAME = LSS_SITE + "/lss/lssplayer/vvMedia.swf";
 var globalUUID_CallbackFuncMap = {};
 var globalUUID_OnSwfReadyFuncMap = {};
 // 视频显示对象
@@ -73,14 +72,12 @@ function Video(id, width, height, callbackFunc, params) {
 Video.prototype.onSwfReady = function () {
 	this.handle = document.getElementById(this.uuid);
 	if (this.handle) {
-
 	}else {
 		alert("can't find swf");
 	}
 }
 // 初始化连接
 // 注：如果rtmpAddr有多个，使用英文逗号分割
-
 
 Video.prototype.initConnect = function (rtmpAddr,/*string*/
 										rtmpLive,/*string*/
@@ -93,7 +90,7 @@ Video.prototype.initConnect = function (rtmpAddr,/*string*/
 										isHD,/*boolean*/
 										session,/*string*/
 										isUDP,/*boolean*/
-										key) {
+										key/*string*/) {
 	if (this.handle) {
 		if (typeof rtmpAddr != "string"
 			|| typeof rtmpLive != "string"
@@ -121,9 +118,7 @@ Video.prototype.initConnect = function (rtmpAddr,/*string*/
 		}else{
 			return;
 		}
-
-		this.handle.initConnect(
-								encodeFlashData(rtmpAddr),
+		this.handle.initConnect(encodeFlashData(rtmpAddr),
 								encodeFlashData(rtmpLive),
 								encodeFlashData(rtmpStream),
 								encodeFlashData(rtmpArea),
@@ -134,8 +129,7 @@ Video.prototype.initConnect = function (rtmpAddr,/*string*/
 								isHD,
 								encodeFlashData(session),
 								isUDP,
-								encodeFlashData(key)
-								);
+								encodeFlashData(key));
 	}
 }
 
@@ -170,7 +164,7 @@ Video.prototype.startPublish = function (width,/*uint*/
 										isUseMic,/*boolean*/
 										isHD,/*boolean*/
 										isUDP,/*boolean*/
-										isMute) {
+										isMute/*boolean*/) {
 	if (this.handle) {
 		if (typeof audioCodec != "string"
 			|| typeof videoCodec != "string"
@@ -256,7 +250,6 @@ Video.prototype.startPublish = function (width,/*uint*/
 								isMute);
 	}
 }
-
 // 暂停上麦
 Video.prototype.pausePublish = function () {
 	if (this.handle) {
@@ -271,7 +264,7 @@ Video.prototype.stopPublish = function () {
 }
 // 播放
 Video.prototype.startPlay_ = function ( rtmpStream, /*string*/
-										bufferTime,/*string*/
+										bufferTime,/*uint*/
 									   speedupRange,/*uint reserved,set 0*/
 									   speedupTime,/*uint reserved,set 0*/
 									   speedupSpeed,/*uint reserved,set 0*/
@@ -280,6 +273,11 @@ Video.prototype.startPlay_ = function ( rtmpStream, /*string*/
 
 	if (this.handle) {
 		if (typeof isMute != "boolean"){
+			return;
+		}
+		if (typeof bufferTime == "number" || typeof bufferTime == "string") {
+			bufferTime = parseInt(bufferTime);
+		}else{
 			return;
 		}
 		if (typeof speedupRange == "number" || typeof speedupRange == "string") {
@@ -302,25 +300,16 @@ Video.prototype.startPlay_ = function ( rtmpStream, /*string*/
 		}else{
 			return;
 		}
-		
-	
-		this.handle.startPlay_(
-			encodeFlashData(rtmpStream), 
-			encodeFlashData(bufferTime), 
-			speedupRange, 
-			speedupTime, 
-			speedupSpeed, 
-			volume, 
-			isMute
-			);
+		//alert("String:"+String(rtmpStream));
+		this.handle.startPlay_(rtmpStream, bufferTime, speedupRange, speedupTime, speedupSpeed, volume, isMute);
 	}
 }
-// //测试接口
-// Video.prototype.testDisplay = function () {
-// 	if (this.handle) {
-// 		this.handle.testDisplay();
-// 	}
-// }
+
+Video.prototype.testDisplay = function () {
+	if (this.handle) {
+		this.handle.testDisplay();
+	}
+}
 
 // 暂停播放
 Video.prototype.pausePlay = function () {
@@ -426,12 +415,6 @@ Video.prototype.getVideoBytesPerSecond= function () /*Number*/{
 Video.prototype.getCurrentBytesPerSecond= function () /*Number*/{
 	if (this.handle) {
 		return this.handle.getCurrentBytesPerSecond();
-	}
-}
-//获取关键帧间隔
-Video.prototype.getKeyFrameInterval= function () /*Number*/{
-	if (this.handle) {
-		return this.handle.getKeyFrameInterval();
 	}
 }
 //获取字节数
@@ -580,34 +563,13 @@ Video.prototype.getCamList = function ()/*array*/
 		return this.handle.getCamList();
 	}
 }
-
-// 设置缓冲区时间
-Video.prototype.setBuffertime = function (bufferTime /*string*/) {
-	if (this.handle) 
-		if(typeof videoCodec != "string")
-		{
-			return ;
-		}
-		return this.handle.setBuffertime(encodeFlashData(bufferTime)); 
-}
-
-//设置全屏模式,initConnect()之后调用有效
-Video.prototype.setFullScreenMode = function (fullScreenMode /*uint*/) {
-	if (this.handle) 
-		if (typeof fullScreenMode == "number" || typeof fullScreenMode == "string") {
-			fullScreenMode = parseInt(fullScreenMode);
-		}else{
-			return;
-		}
-		return this.handle.setFullScreenMode(fullScreenMode); 
-}
 // 设置高清模式，initConnect()之后调用有效
 Video.prototype.setHD = function (isHD /*boolean*/) {
 	if (this.handle) {
 		if (typeof isHD != "boolean"){
 			return;
 		}
-		return this.handle.setHD(isHD); 
+		return this.handle.setHD(isHD);
 	}
 }
 // 设置UDP模式，initConnect()之后调用有效
@@ -903,51 +865,6 @@ Video.prototype.addEventListener = function (callbackFunc) {
 		globalUUID_CallbackFuncMap[this.uuid] = callbackFunc;
 	}
 }
-
-//设置广告参数
-// Video.prototype.initArgc = function (adveType/*string*/, adveAddr/*string*/) {
-Video.prototype.initArgc = function (adveDeAddr/*string*/, 
-									adveReAddr/*string*/, 
-									width /*uint*/, 
-									height/*uint*/,
-									controlbardisplay,/*string*/ 
-									logo,/*string*/
-									logoposition,/*string*/ 
-									server,/*string*/
-									logoAlpha/*uint*/) { 
-	if (this.handle) {
-		if (typeof width == "number" || typeof width == "string") {
-			width= parseInt(width);
-		}else{
-			return;
-		}
-
-		if (typeof height == "number" || typeof height == "string") {
-			height = parseInt(height);
-		}else{
-			return; 
-		}
-
-		if (typeof logoAlpha == "number" || typeof logoAlpha == "string") {
-			logoAlpha = parseInt(logoAlpha); 
-		}else{
-			return; 
-		}
-		return this.handle.initArgc(encodeFlashData(adveDeAddr),
-									encodeFlashData(adveReAddr), 
-									width, 
-									height,
-									encodeFlashData(controlbardisplay),
-									encodeFlashData(logo),
-									encodeFlashData(logoposition),
-									encodeFlashData(server),
-									logoAlpha
-									);  
-	}
-}
-
-
-
 // 回调消息
 function lssCallBack(uuid, type, info) {
 	if (globalUUID_CallbackFuncMap[uuid]){
@@ -972,17 +889,15 @@ function createVideo(id, uuid, width, height, param) {
 	var displayid = id.toString();
 	var swfVersionStr = "11.1.0";
 	// To use express install, set to playerProductInstall.swf, otherwise the empty string.
-	var xiSwfUrlStr = "playerProductInstall.swf";
+	var xiSwfUrlStr = LSS_SITE + "/lss/lssplayer/playerProductInstall.swf";
 	var flashvars = {};
 	flashvars.uuid = uuid;
 	var params = {};
-	 // var params = { 
-  //        allowScriptAccess:"always"
-  //   };
 	params.quality = param["quality"] || "high";
 	params.bgcolor = param["bgcolor"] || "#ffffff";
-	params.allowscriptaccess = param["allowscriptaccess"] || "sameDomain";
+	//params.allowscriptaccess = param["allowscriptaccess"] || "sameDomain";
 	params.allowfullscreen = param["allowfullscreen"] || "true";
+	params.allowScriptAccess = "always";
 	var attributes = {};
 	attributes.id = uuid;
 	attributes.name = uuid;
@@ -993,4 +908,202 @@ function createVideo(id, uuid, width, height, param) {
 		swfVersionStr, xiSwfUrlStr,
 		flashvars, params, attributes);
 		swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+}
+
+function lssplayerRun(conf){
+	if(!conf.uin||conf.uin==""||!conf.app||conf.app==""||!conf.stream||conf.stream==""){
+		console.log("缺少必要的参数：app、stream");
+		return;
+	}
+	
+	var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");
+	var html = '<p>To view this page ensure that Adobe Flash Player version 11.0.0 or greater is installed.</p><a href="http://www.adobe.com/go/getflashplayer"><img src="' + pageHost + '"www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a>';
+	$('#'+conf.container).html(html);
+	
+	var mode = /^\d{0,6}(\%)?$/;
+	var width = mode.test(conf.player.width) ? conf.player.width : '100%';
+	var height = mode.test(conf.player.height) ? conf.player.height : '100%';
+	var containerWidth = document.getElementById(conf.container).scrollWidth;
+	var containerHeight = document.getElementById(conf.container).scrollHeight;
+	var mode = /^\d{0,6}$/;
+	if(mode.test(width)){
+		width = parseInt(width);
+	}
+	else{
+		width = (width.substr(0,width.length-1).toString(0)/100) * containerWidth;
+	}
+	if(mode.test(height)){
+		height = parseInt(height);
+	}
+	else{
+		height = (height.substr(0,height.length-1).toString(0)/100) * containerHeight;
+	}
+	
+	var autostart = typeof(conf.player.autostart)=='boolean'?conf.player.autostart:false;
+	var _bufferTime = mode.test(conf.player.bufferlength) ? parseInt(conf.player.bufferlength) : 3;
+	
+	var _rtmpLive = conf.app;
+	var _rtmpAddr = 'rtmp://'+ conf.uin +'.lssplay.aodianyun.com/' + _rtmpLive;
+	var _rtmpStream = conf.stream;
+	var _key = conf.key ? conf.key : '';//密码
+	var _rtmpArea = 'hangzhou';
+	var _schedulingPing = '1500';//调度时Ping超时
+	var _limitCheckPing = '300';//播放时超过Ping就切换服务器
+	var _checkPingTimer = '1000';//检测Ping间隔
+	var _userID = 'Test';
+	var _isHD = false;//是否高清
+	var _session = 'TestSession';
+	var _isUDP = false;//是否UDP
+	var _speedupRange = '0';
+	var _speedupTime = '0';
+	var _speedupSpeed = '0';
+	var _volume = '80';//音量
+	var _isMute = false;//是否静音
+	var _totalFlow = 0;//总流量
+	var _avgBitrate = 0;//平均码率
+	var _maxBitrate = 0;//峰值码率
+	var _mediaInfo = '';//流媒体传输信息
+	
+	var player1 = new Video(conf.container,width,height,
+				  function(type, info){
+					 switch(type)
+					 {
+					  case RTMP_MEDIA_INFO:
+						  switch(info)
+						  {
+						  case "Svr.Version.Success":
+							  break;
+						  case "NetConnection.Connect.Success":
+						  case "ChangeInfo.NetConnection.Connect.Success":
+						  case "new connect":
+							  break;
+						  case SCHEDULE_FINISH:
+							  break;
+						  case RTMP_PEPFLASH:
+							  alert("警告：\n\n系统检测到您正在使用 Pepper Flash Player，\n\n此版本的 Flash 并不完善，请尝试更换IE浏览器，\n\n或百度“如何禁用Pepper Flash”。");
+							  player1.closeConnect();
+							  break;
+						  default:
+							  break;
+						  }
+						  break;
+					  case RTMP_MEDIA_ERROR:
+						  break;
+					  case MEDIA_DEVICE_INFO:
+						  switch(info)
+						  {
+						  case "AVHardwareDisable":
+							  alert("flash player 全局设置了禁用硬件设置，修改方法：\nC:\WINDOWS\system32\Macromed\Flash\mms.cfg\n文件，修改为 AVHardwareDisable=0");;
+							  break;
+						  //需要添加其他摄像头麦克风禁用的消息
+						  default:
+							  break;
+						  }
+						  break;
+					  case RTMP_MEDIA_READY:	//swf加载完成消息
+						  player1.onSwfReady();
+						  player1.initConnect(_rtmpAddr,_rtmpLive,_rtmpStream,_rtmpArea,_schedulingPing,_limitCheckPing,_checkPingTimer,_userID,_isHD,_session,_isUDP,_key);
+						  if(autostart == true){
+							  player1.startPlay(_rtmpStream,_bufferTime,_speedupRange, _speedupTime,_speedupSpeed,_volume,_isMute);
+						  }
+						  break;
+					  case RTMP_MEDIA_NETSTREAM_INFO:
+						  break;
+					  case RTMP_MEDIA_STATISTICS:
+						  var obj = JSON.parse(info);
+						  if (obj) {
+							  if (obj.totalFlow >= 1048576) {
+								  _totalFlow = (obj.totalFlow / 1048576).toFixed(2) + "MB";
+							  } else {
+								  _totalFlow = (obj.totalFlow / 1024).toFixed(2) + "KB";
+							  }
+							  _avgBitrate = (obj.avgBitrate / 1000).toFixed(2) + "kb";
+							  _maxBitrate = (obj.maxBitrate / 1000).toFixed(2) + "kb";
+						  }
+						  break;
+					  default:
+						  break;
+					 }
+					 if (type != RTMP_MEDIA_NETSTREAM_INFO && type != RTMP_MEDIA_STATISTICS){
+						  var date = new Date();
+						  _mediaInfo.value = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"."+date.getMilliseconds()+' '+info+'\n'+_mediaInfo.value;
+					 }
+				  },
+			null);
+	
+	this.test = function(){alert(123);}
+	//播放
+	this.startPlay = function(){
+    	if(player1){
+			player1.startPlay(_rtmpStream,_bufferTime,_speedupRange, _speedupTime,_speedupSpeed,_volume,_isMute);
+		}
+		else{
+			console.log('播放器加载失败');
+			return;
+		}
+    }
+	//暂停
+	this.pause = function(){
+		if(player1){
+			player1.pause();
+		}
+		else{
+			console.log('播放器加载失败');
+			return;
+		}
+	}
+	//停止
+	this.stopPlayer = function(){
+		if(player1){
+			player1.stopPlayer();
+		}
+		else{
+			console.log('播放器加载失败');
+			return;
+		}
+	}
+	//断开连接
+	this.closeConnect = function(){
+		if(player1){
+			player1.closeConnect();
+		}
+		else{
+			console.log('播放器加载失败');
+			return;
+		}
+	}
+	//禁音
+	this.setMute = function(isMute){
+		if(typeof(isMute)!='boolean'){
+			console.log('参数错误');
+			return;
+		}
+		if(player1){
+			player1.setMute(isMute);
+		}
+		else{
+			console.log('播放器加载失败');
+			return;
+		}
+	}
+	//音量调节
+	this.setVolume = function(volume){
+		var mode = /^\d{1,3}$/;
+		if(!mode.test(volume)){
+			console.log('音量只能为0-100');
+			return;
+		}
+		volume = parseInt(volume);
+		if(volume > 100){
+			console.log('音量只能为0-100');
+			return;
+		}
+		if(player1){
+			player1.setVolume(volume);
+		}
+		else{
+			console.log('播放器加载失败');
+			return;
+		}
+	}
 }
